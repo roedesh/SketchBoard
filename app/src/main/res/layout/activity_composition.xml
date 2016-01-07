@@ -14,15 +14,6 @@
         <!--DIT IS JE CONTENT-->
     </LinearLayout>
 
-    <ExpandableListView
-        android:id="@+id/lvExp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:childDivider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="@color/palette_background" />
-
     <android.support.design.widget.NavigationView
         android:id="@+id/main_nav"
         android:layout_width="wrap_content"
@@ -32,5 +23,12 @@
         android:fitsSystemWindows="true"
         app:itemBackground="@android:color/transparent"
         app:menu="@menu/nav" />
+
+    <RelativeLayout
+        android:id="@+id/container"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"/>
 
 </android.support.v4.widget.DrawerLayout>

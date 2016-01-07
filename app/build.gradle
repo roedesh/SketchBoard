@@ -24,4 +24,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.larswerkman:HoloColorPicker:1.5'
+    compile ('com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.5@aar'){
+        transitive=true
+    }
 }

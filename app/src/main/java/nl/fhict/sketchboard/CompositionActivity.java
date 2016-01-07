@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -23,10 +22,14 @@ import com.larswerkman.holocolorpicker.SaturationBar;
 import com.larswerkman.holocolorpicker.ValueBar;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class CompositionActivity extends AppCompatActivity  implements ColorPicker.OnColorChangedListener {
+
+    private static final String FRAGMENT_TAG_DATA_PROVIDER = "data provider";
+    private static final String FRAGMENT_LIST_VIEW = "list view";
+
+    List<StableString> strings = new ArrayList<>();
 
     DrawingView drawingView;
     int yourStep = 10;
@@ -43,41 +46,16 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
 
-        ExpandableListAdapter listAdapter;
-        final ExpandableListView expListView;
-        List<String> listDataHeader = new ArrayList<>();
-        HashMap<String, List<String>> listDataChild = new HashMap<>();
-
-        listDataHeader.add("Options");
-        listDataHeader.add("Layers");
-
-        List<String> layers = new ArrayList<String>();
-        layers.add("Layer 1");
-        layers.add("Layer 2");
-
-        List<String> options = new ArrayList<String>();
-        options.add("Option 1");
-        options.add("Option 2");
-
-        listDataChild.put(listDataHeader.get(0), options);
-        listDataChild.put(listDataHeader.get(1), layers); // Header, Child data
+        strings.add(new StableString("Layer 1"));
+        strings.add(new StableString("Layer 2"));
 
 
-        expListView = (ExpandableListView) findViewById(R.id.lvExp);
-        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            int previousGroup = -1;
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new nl.fhict.sketchboard.RecyclerListViewFragment(), FRAGMENT_LIST_VIEW)
+                    .commit();
+        }
 
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                if(groupPosition != previousGroup)
-                    expListView.collapseGroup(previousGroup);
-                previousGroup = groupPosition;
-            }
-        });
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
-
-        // setting list adapter
-        expListView.setAdapter(listAdapter);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.main_nav);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -193,4 +171,9 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
     public void onColorChanged(int color) {
 
     }
+
+    public List<StableString> getStableString(){
+        return strings;
+    }
+
 }
