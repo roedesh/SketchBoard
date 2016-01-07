@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="palette_primary">#3F51B5</color>
+    <color name="palette_primary_dark">#303F9F</color>
+    <color name="palette_accent">#FF4081</color>
+    <color name="palette_scrim">#C0222222</color>
+    <color name="palette_background">#FAFAFA</color>
+</resources>

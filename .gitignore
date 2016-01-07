@@ -1,0 +1,8 @@
+.gradle/
+.idea/
+build/
+captures/
+gradle/
+.DS_Store
+add_adb.bat
+local.properties

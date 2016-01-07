@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">OCE UI Test</string>
+    <string name="header_image">Header Image</string>
+    <string name="action_change_color">Verander kleur</string>
+    <string name="title_change_color">Kies een kleur</string>
+    <string name="action_stroke_width">Verander lijndikte</string>
+    <string name="action_eraser">Gum</string>
+</resources>

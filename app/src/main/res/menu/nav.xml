@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/action_change_color"
+        android:icon="@drawable/ic_change_color"
+        android:id="@+id/menu_nav_change_color" />
+    <item android:title="@string/action_stroke_width"
+        android:icon="@drawable/ic_add"
+        android:id="@+id/menu_nav_change_size"/>
+    <item android:title="@string/action_eraser"
+        android:icon="@drawable/ic_add"
+        android:id="@+id/menu_nav_switch_eraser"/>
+</menu>
