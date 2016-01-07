@@ -44,7 +44,7 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
 
         ExpandableListAdapter listAdapter;
-        ExpandableListView expListView;
+        final ExpandableListView expListView;
         List<String> listDataHeader = new ArrayList<>();
         HashMap<String, List<String>> listDataChild = new HashMap<>();
 
@@ -64,6 +64,16 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
 
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
+        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            int previousGroup = -1;
+
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if(groupPosition != previousGroup)
+                    expListView.collapseGroup(previousGroup);
+                previousGroup = groupPosition;
+            }
+        });
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
 
         // setting list adapter
