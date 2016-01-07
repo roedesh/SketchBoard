@@ -48,8 +48,8 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
         List<String> listDataHeader = new ArrayList<>();
         HashMap<String, List<String>> listDataChild = new HashMap<>();
 
-        listDataHeader.add("Layers");
         listDataHeader.add("Options");
+        listDataHeader.add("Layers");
 
         List<String> layers = new ArrayList<String>();
         layers.add("Layer 1");
@@ -59,8 +59,9 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
         options.add("Option 1");
         options.add("Option 2");
 
-        listDataChild.put(listDataHeader.get(0), layers); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), options);
+        listDataChild.put(listDataHeader.get(0), options);
+        listDataChild.put(listDataHeader.get(1), layers); // Header, Child data
+
 
         expListView = (ExpandableListView) findViewById(R.id.lvExp);
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
