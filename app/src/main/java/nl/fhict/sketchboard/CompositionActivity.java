@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -20,6 +21,10 @@ import com.larswerkman.holocolorpicker.OpacityBar;
 import com.larswerkman.holocolorpicker.SVBar;
 import com.larswerkman.holocolorpicker.SaturationBar;
 import com.larswerkman.holocolorpicker.ValueBar;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class CompositionActivity extends AppCompatActivity  implements ColorPicker.OnColorChangedListener {
 
@@ -37,6 +42,31 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
         mainLayout.addView(drawingView);
 
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
+
+        ExpandableListAdapter listAdapter;
+        ExpandableListView expListView;
+        List<String> listDataHeader = new ArrayList<>();
+        HashMap<String, List<String>> listDataChild = new HashMap<>();
+
+        listDataHeader.add("Layers");
+        listDataHeader.add("Options");
+
+        List<String> layers = new ArrayList<String>();
+        layers.add("Layer 1");
+        layers.add("Layer 2");
+
+        List<String> options = new ArrayList<String>();
+        options.add("Option 1");
+        options.add("Option 2");
+
+        listDataChild.put(listDataHeader.get(0), layers); // Header, Child data
+        listDataChild.put(listDataHeader.get(1), options);
+
+        expListView = (ExpandableListView) findViewById(R.id.lvExp);
+        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.main_nav);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {

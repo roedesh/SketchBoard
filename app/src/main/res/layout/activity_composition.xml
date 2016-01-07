@@ -13,10 +13,16 @@
         android:id="@+id/main_linear_layout">
         <!--DIT IS JE CONTENT-->
     </LinearLayout>
+    <ExpandableListView
+        android:id="@+id/lvExp"
+        android:layout_gravity="end"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:background="@color/palette_background"/>
     <android.support.design.widget.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="end"
+        android:layout_gravity="start"
         android:fitsSystemWindows="true"
         android:background="@color/palette_background"
         app:itemBackground="@android:color/transparent"
