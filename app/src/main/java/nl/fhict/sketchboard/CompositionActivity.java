@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -43,7 +42,7 @@ import nl.fhict.sketchboard.layers.Layerable;
 import nl.fhict.sketchboard.layers.LineLayer;
 import nl.fhict.sketchboard.layers.TextLayer;
 
-public class CompositionActivity extends AppCompatActivity  implements ColorPicker.OnColorChangedListener {
+public class CompositionActivity extends AppCompatActivity implements ColorPicker.OnColorChangedListener {
 
     private static final String FRAGMENT_TAG_DATA_PROVIDER = "data provider";
     private static final String FRAGMENT_LIST_VIEW = "list view";
@@ -130,8 +129,8 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
                 switch (item.getItemId()) {
                     case R.id.menu_nav_change_color:
                         final Dialog cpdialog = new Dialog(CompositionActivity.this);
-                        LayoutInflater cpinflater = (LayoutInflater)CompositionActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
-                        View cplayout = cpinflater.inflate(R.layout.dialog_pickcolor, (ViewGroup)findViewById(R.id.your_dialog_root_element));
+                        LayoutInflater cpinflater = (LayoutInflater) CompositionActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                        View cplayout = cpinflater.inflate(R.layout.dialog_pickcolor, (ViewGroup) findViewById(R.id.your_dialog_root_element));
                         cpdialog.requestWindowFeature(Window.FEATURE_NO_TITLE); //before
                         cpdialog.setContentView(cplayout);
                         cpdialog.setCancelable(false);
@@ -177,14 +176,14 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
                     case R.id.menu_nav_change_size:
                         Dialog yourDialog = new Dialog(CompositionActivity.this);
-                        LayoutInflater inflater = (LayoutInflater)CompositionActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
-                        View layout = inflater.inflate(R.layout.dialog_changesize, (ViewGroup)findViewById(R.id.your_dialog_root_element));
+                        LayoutInflater inflater = (LayoutInflater) CompositionActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                        View layout = inflater.inflate(R.layout.dialog_changesize, (ViewGroup) findViewById(R.id.your_dialog_root_element));
                         yourDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                         yourDialog.setContentView(layout);
 
 
-                        final TextView yourDialogTextview = (TextView)layout.findViewById(R.id.your_dialog_textview);
-                        final SeekBar yourDialogSeekBar = (SeekBar)layout.findViewById(R.id.your_dialog_seekbar);
+                        final TextView yourDialogTextview = (TextView) layout.findViewById(R.id.your_dialog_textview);
+                        final SeekBar yourDialogSeekBar = (SeekBar) layout.findViewById(R.id.your_dialog_seekbar);
                         yourDialogSeekBar.setProgress(drawingView.getStrokeWidth() - 10);
                         yourDialogTextview.setText("Line Width : " + drawingView.getStrokeWidth());
                         yourDialog.show();
@@ -202,7 +201,7 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
                             @Override
                             public void onProgressChanged(SeekBar seekBark, int progress, boolean fromUser) {
-                                progress = ((int)Math.round(progress/yourStep ))*yourStep;
+                                progress = ((int) Math.round(progress / yourStep)) * yourStep;
                                 yourDialogSeekBar.setProgress(progress);
                                 yourDialogTextview.setText("Line Width : " + (10 + progress));
                                 //add code here
@@ -212,10 +211,9 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
                         return true;
                     case R.id.menu_nav_switch_eraser:
-                        if (drawingView.isInEraserMode()){
+                        if (drawingView.isInEraserMode()) {
                             drawingView.setEraserMode(false);
-                        }
-                        else {
+                        } else {
                             drawingView.setEraserMode(true);
                         }
                         return true;
@@ -224,7 +222,7 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
                                 Toast.LENGTH_LONG).show();
                         return true;
                     case R.id.menu_nav_load_image:
-                        startActivityForResult(new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), RESULT_LOAD_IMAGE);
+                        startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), RESULT_LOAD_IMAGE);
                         return true;
                     case R.id.menu_nav_insert_text:
                         AlertDialog.Builder alert = new AlertDialog.Builder(CompositionActivity.this);
@@ -251,8 +249,6 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
         });
 
 
-
-
     }
 
     @Override
@@ -260,8 +256,8 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-            Cursor cursor = getContentResolver().query(selectedImage,filePathColumn, null, null, null);
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
             cursor.moveToFirst();
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             String picturePath = cursor.getString(columnIndex);
@@ -269,30 +265,26 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
             addLayer(new ImageLayer(BitmapFactory.decodeFile(picturePath), new PointF(5, 5)));
         }
-        });
-
-
-
-
     }
+
 
     @Override
     public void onColorChanged(int color) {
 
     }
 
-    public void addLayer(Layerable layer){
+    public void addLayer(Layerable layer) {
         this.layers.add(layer);
         this.drawLayers();
     }
 
-    public void drawLayers(){
-        for (Layerable layer : this.layers){
+    public void drawLayers() {
+        for (Layerable layer : this.layers) {
             layer.draw(this.canvas);
         }
     }
 
-    public List<Layerable> getLayers(){
+    public List<Layerable> getLayers() {
         return layers;
     }
 
