@@ -228,6 +228,11 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
             // ImageView imageView = (ImageView) findViewById(R.id.imgView);
             // imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
         }
+        });
+
+
+
+
     }
 
     @Override
