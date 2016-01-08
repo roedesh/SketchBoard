@@ -13,7 +13,7 @@ import java.io.ObjectOutputStream;
  */
 public class SaveAndLoadManager {
 
-    public boolean save(String projectName, Object object) {
+    public static boolean save(String projectName, Object object) {
         FileOutputStream fos= null;
         BufferedOutputStream out= null;
         ObjectOutputStream outobject = null;
@@ -29,17 +29,23 @@ public class SaveAndLoadManager {
             e.printStackTrace();
         }finally {
             try {
-                outobject.close();
+                if (outobject != null){
+                    outobject.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                out.close();
+                if (out != null){
+                    out.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                fos.close();
+                if (fos != null){
+                    fos.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -48,35 +54,38 @@ public class SaveAndLoadManager {
     }
 
 
-    public Object load(String fileName){
-        FileInputStream fos = null;
-        BufferedInputStream out = null;
-        ObjectInputStream outobject = null;
+    public static Object load(String fileName){
+        FileInputStream fis = null;
+        BufferedInputStream in = null;
+        ObjectInputStream inobject = null;
 
         try{
-            fos = new FileInputStream(fileName);
-            out = new BufferedInputStream(fos);
-            outobject = new ObjectInputStream(out);
+            fis = new FileInputStream(fileName);
+            in = new BufferedInputStream(fis);
+            inobject = new ObjectInputStream(in);
 
-            Object object = outobject.readObject();
-
-            return object;
-
+            return inobject.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
             try {
-                outobject.close();
+                if (inobject != null){
+                    inobject.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                out.close();
+                if (in != null){
+                    in.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                fos.close();
+                if (fis != null){
+                    fis.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

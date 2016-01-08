@@ -39,9 +39,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.fhict.sketchboard.layers.ImageLayer;
+import nl.fhict.sketchboard.layers.LayerWrapper;
 import nl.fhict.sketchboard.layers.Layerable;
 import nl.fhict.sketchboard.layers.LineLayer;
 import nl.fhict.sketchboard.layers.TextLayer;
+import nl.fhict.sketchboard.utils.SaveAndLoadManager;
 
 public class CompositionActivity extends AppCompatActivity implements ColorPicker.OnColorChangedListener {
 
@@ -59,6 +61,14 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_composition);
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_linear_layout);
+
+        if (getIntent().hasExtra("File")) {
+            LayerWrapper lw = (LayerWrapper) getIntent().getSerializableExtra("File");
+            if (lw != null){
+                this.layers = lw.getLayers();
+                // update & draw
+            }
+        }
 
         // Creates a new drawing view and adds it to the main linear layout.
         drawingView = new DrawingView(getApplicationContext());
@@ -218,6 +228,8 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                         }
                         return true;
                     case R.id.menu_nav_save:
+                        SaveAndLoadManager.save("file", layers);
+
                         Toast.makeText(getApplicationContext(), "Test saving.",
                                 Toast.LENGTH_LONG).show();
                         return true;
