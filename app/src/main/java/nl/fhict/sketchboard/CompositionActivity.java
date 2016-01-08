@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -33,8 +35,10 @@ import com.larswerkman.holocolorpicker.ValueBar;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.fhict.sketchboard.layers.ImageLayer;
 import nl.fhict.sketchboard.layers.Layerable;
 import nl.fhict.sketchboard.layers.LineLayer;
+import nl.fhict.sketchboard.layers.TextLayer;
 
 public class CompositionActivity extends AppCompatActivity  implements ColorPicker.OnColorChangedListener {
 
@@ -187,13 +191,7 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
                         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                // Do something with value!
-                            }
-                        });
-
-                        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                // Canceled.
+                                addLayer(new TextLayer(input.getText().toString()));
                             }
                         });
 
@@ -222,17 +220,18 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
 
-            // Add 'BitmapFactory.decodeFile(picturePath)' as Layer to List.
-
-            // Original code:
-            // ImageView imageView = (ImageView) findViewById(R.id.imgView);
-            // imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+            addLayer(new ImageLayer(BitmapFactory.decodeFile(picturePath), new PointF(5, 5)));
         }
     }
 
     @Override
     public void onColorChanged(int color) {
 
+    }
+
+    public void addLayer(Layerable layer){
+        this.layers.add(layer);
+        // Draw everything.
     }
 
     public List<Layerable> getLayers(){

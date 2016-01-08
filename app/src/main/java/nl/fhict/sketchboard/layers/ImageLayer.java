@@ -15,17 +15,15 @@ public class ImageLayer implements Layerable {
     private Bitmap image;
     private PointF point;
 
-    public ImageLayer(long id, Bitmap image, PointF point){
-        this.name = PREFIX + 1;
+    public ImageLayer(Bitmap image, PointF point){
+        this.name = PREFIX + nextNumber++;
         this.image = image;
         this.point = point;
-        nextNumber++;
     }
 
     public ImageLayer(Context context, int resourceId) {
-        this.name = PREFIX + 1;
+        this.name = PREFIX + nextNumber++;
         this.image = BitmapFactory.decodeResource(context.getResources(), resourceId);
-        nextNumber++;
     }
 
     @Override
