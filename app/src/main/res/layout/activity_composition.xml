@@ -14,11 +14,64 @@
         <!--DIT IS JE CONTENT-->
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:orientation="vertical"
+        android:id="@+id/menu_button_layout"
+        android:weightSum="1"
+        android:gravity="center_vertical">
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/drawerbutton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="10dp"
+            android:scaleType="center"
+            app:layout_anchorGravity="center|bottom"
+            app:borderWidth="0dp"
+            app:elevation="6dp"
+            app:layout_anchor="@+id/main_nav"
+            app:backgroundTint="@color/palette_fabdraw"
+
+            android:src="@drawable/ic_arrow_left" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:orientation="vertical"
+        android:id="@+id/menu_layerbutton_layout"
+        android:weightSum="1"
+        android:gravity="center_vertical">
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/layerbutton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="left|bottom|end"
+            android:layout_margin="10dp"
+            android:scaleType="center"
+            app:layout_anchorGravity="center|bottom"
+            app:borderWidth="0dp"
+            app:elevation="6dp"
+            app:layout_anchor="@+id/main_nav"
+            app:backgroundTint="@color/palette_fabdraw"
+
+            android:src="@drawable/ic_arrow_right" />
+
+    </LinearLayout>
+
     <android.support.design.widget.NavigationView
         android:id="@+id/main_nav"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
+        android:layout_gravity="end"
         android:background="@color/palette_background"
         android:fitsSystemWindows="true"
         app:itemBackground="@android:color/transparent"
@@ -29,6 +82,6 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="end"/>
+        android:layout_gravity="start"/>
 
 </android.support.v4.widget.DrawerLayout>

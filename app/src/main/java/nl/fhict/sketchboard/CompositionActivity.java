@@ -5,12 +5,17 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,8 +38,10 @@ import com.larswerkman.holocolorpicker.ValueBar;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.fhict.sketchboard.layers.ImageLayer;
 import nl.fhict.sketchboard.layers.Layerable;
 import nl.fhict.sketchboard.layers.LineLayer;
+import nl.fhict.sketchboard.layers.TextLayer;
 
 public class CompositionActivity extends AppCompatActivity  implements ColorPicker.OnColorChangedListener {
 
@@ -46,6 +53,7 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
     DrawingView drawingView;
     int yourStep = 10;
+    Canvas canvas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +66,49 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
         mainLayout.addView(drawingView);
 
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+        final FloatingActionButton drawerbutton = (FloatingActionButton) findViewById(R.id.drawerbutton);
+
+        drawerbutton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.RIGHT);
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            }
+        });
+
+        final FloatingActionButton layoutbutton = (FloatingActionButton) findViewById(R.id.layerbutton);
+
+        layoutbutton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.LEFT);
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            }
+        });
+
+        drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
 
         layers.add(new LineLayer());
         layers.add(new LineLayer());
@@ -187,13 +238,7 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
                         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                // Do something with value!
-                            }
-                        });
-
-                        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                // Canceled.
+                                addLayer(new TextLayer(input.getText().toString()));
                             }
                         });
 
@@ -222,11 +267,7 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
 
-            // Add 'BitmapFactory.decodeFile(picturePath)' as Layer to List.
-
-            // Original code:
-            // ImageView imageView = (ImageView) findViewById(R.id.imgView);
-            // imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+            addLayer(new ImageLayer(BitmapFactory.decodeFile(picturePath), new PointF(5, 5)));
         }
         });
 
@@ -238,6 +279,17 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
     @Override
     public void onColorChanged(int color) {
 
+    }
+
+    public void addLayer(Layerable layer){
+        this.layers.add(layer);
+        this.drawLayers();
+    }
+
+    public void drawLayers(){
+        for (Layerable layer : this.layers){
+            layer.draw(this.canvas);
+        }
     }
 
     public List<Layerable> getLayers(){

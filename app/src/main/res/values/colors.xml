@@ -19,5 +19,6 @@
     <color name="palette_primary_dark">#303F9F</color>
     <color name="palette_accent">#FF4081</color>
     <color name="palette_scrim">#C0222222</color>
+    <color name="palette_fabdraw">#595959</color>
     <color name="palette_background">#FAFAFA</color>
 </resources>
