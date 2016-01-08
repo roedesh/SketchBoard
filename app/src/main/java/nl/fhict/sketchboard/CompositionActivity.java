@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.larswerkman.holocolorpicker.OpacityBar;
@@ -162,11 +163,13 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
                         else {
                             drawingView.setEraserMode(true);
                         }
-
+                        return true;
+                    case R.id.menu_nav_save:
+                        Toast.makeText(getApplicationContext(), "Test saving.",
+                                Toast.LENGTH_LONG).show();
                     case R.id.menu_nav_load_image:
                         startActivityForResult(new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), RESULT_LOAD_IMAGE);
                         return true;
-
                     default:
                         return true;
                 }

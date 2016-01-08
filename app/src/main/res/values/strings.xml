@@ -6,4 +6,5 @@
     <string name="action_stroke_width">Verander lijndikte</string>
     <string name="action_image">Kies afbeelding</string>
     <string name="action_eraser">Gum</string>
+    <string name="action_save">Save</string>
 </resources>
