@@ -157,10 +157,13 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
                         else {
                             drawingView.setEraserMode(true);
                         }
-
+                        return true;
                     case R.id.menu_nav_save:
                         Toast.makeText(getApplicationContext(), "Test saving.",
                                 Toast.LENGTH_LONG).show();
+                    case R.id.menu_nav_load_image:
+                        
+                        return true;
                     default:
                         return true;
                 }
