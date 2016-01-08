@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.larswerkman.holocolorpicker.OpacityBar;
@@ -156,6 +157,10 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
                         else {
                             drawingView.setEraserMode(true);
                         }
+
+                    case R.id.menu_nav_save:
+                        Toast.makeText(getApplicationContext(), "Test saving.",
+                                Toast.LENGTH_LONG).show();
                     default:
                         return true;
                 }

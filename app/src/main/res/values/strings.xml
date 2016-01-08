@@ -5,4 +5,5 @@
     <string name="title_change_color">Kies een kleur</string>
     <string name="action_stroke_width">Verander lijndikte</string>
     <string name="action_eraser">Gum</string>
+    <string name="action_save">Save</string>
 </resources>
