@@ -53,7 +53,6 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
     DrawingView drawingView;
     int yourStep = 10;
-    Canvas canvas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -283,7 +282,7 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
     public void drawLayers(){
         for (Layerable layer : this.layers){
-            layer.draw(this.canvas);
+            layer.draw(this.drawingView.getCanvas());
         }
     }
 
