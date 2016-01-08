@@ -156,6 +156,11 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
                         else {
                             drawingView.setEraserMode(true);
                         }
+
+                    case R.id.menu_nav_load_image:
+                        
+                        return true;
+
                     default:
                         return true;
                 }

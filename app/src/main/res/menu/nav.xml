@@ -9,4 +9,7 @@
     <item android:title="@string/action_eraser"
         android:icon="@drawable/ic_add"
         android:id="@+id/menu_nav_switch_eraser"/>
+    <item android:title="@string/action_image"
+        android:icon="@drawable/ic_add"
+        android:id="@+id/menu_nav_load_image"/>
 </menu>
