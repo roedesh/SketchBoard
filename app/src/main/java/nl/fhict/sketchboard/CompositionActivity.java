@@ -6,13 +6,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -277,6 +278,12 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
     public void addLayer(Layerable layer) {
         this.layers.add(layer);
+        Fragment frg = null;
+        frg = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.detach(frg);
+        ft.attach(frg);
+        ft.commit();
         this.drawLayers();
     }
 

@@ -8,7 +8,6 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.Base64;
-import android.view.MotionEvent;
 import android.view.View;
 
 import java.io.ByteArrayOutputStream;
@@ -96,37 +95,7 @@ public class DrawingView extends View {
         canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
         canvas.drawPath(drawPath, drawPaint);
     }
-
-    /**
-     * Listener for touch events.
-     * On the ACTION_MOVE event, if erase is true, draw a transparent circle, else do the spray can effect in touch_move;
-     *
-     * @param event touch event
-     * @return true
-     */
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                drawPath.moveTo(x, y);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                drawPath.lineTo(x, y);
-                break;
-            case MotionEvent.ACTION_UP:
-                drawCanvas.drawPath(drawPath, drawPaint);
-                drawPath.reset();
-                break;
-            default:
-                return false;
-        }
-        invalidate();
-        return true;
-    }
-
+    
     /**
      * Sets the stroke width.
      *
