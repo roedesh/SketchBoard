@@ -235,7 +235,10 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
                         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                addLayer(new TextLayer(input.getText().toString()));
+                                int size = drawingView.getStrokeWidth();
+                                drawingView.setStrokeWidth(1);
+                                addLayer(new TextLayer(input.getText().toString(), drawingView.getDrawPaint()));
+                                drawingView.setStrokeWidth(size);
                             }
                         });
 

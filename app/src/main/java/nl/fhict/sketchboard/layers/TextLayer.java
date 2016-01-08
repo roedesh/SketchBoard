@@ -15,13 +15,10 @@ public class TextLayer implements Layerable {
     private String text;
     private Paint paint;
 
-    public TextLayer(String text){
+    public TextLayer(String text, Paint paint){
         name = PREFIX + nextNumber++;
         this.text = text;
-    }
-
-    public Paint getPaint() {
-        return paint;
+        this.paint = paint;
     }
 
     public void setPaint(Paint paint) {

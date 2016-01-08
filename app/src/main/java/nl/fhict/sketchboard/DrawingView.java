@@ -182,6 +182,10 @@ public class DrawingView extends View {
         return this.drawCanvas;
     }
 
+    public Paint getDrawPaint(){
+        return drawPaint;
+    }
+
 
     public boolean isInEraserMode() {
         return eraserMode;
