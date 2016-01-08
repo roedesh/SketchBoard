@@ -1,7 +1,10 @@
 package nl.fhict.sketchboard.utils;
 
+import android.os.Environment;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,13 +16,30 @@ import java.io.ObjectOutputStream;
  */
 public class SaveAndLoadManager {
 
-    public static boolean save(String projectName, Object object) {
+    private static String pathPrefix;
+
+    public static void init(){
+        File dir;
+        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))//check if sd card is mounted
+        {
+            dir=new File(Environment.getExternalStorageDirectory(),"SketchBoard");
+
+            if(!dir.exists()){
+                dir.mkdirs();
+            }
+
+            pathPrefix = dir.getAbsolutePath() + File.separatorChar;
+        }
+    }
+
+    public static boolean save(String fileName, Object object) {
+        fileName = pathPrefix + fileName;
         FileOutputStream fos= null;
         BufferedOutputStream out= null;
         ObjectOutputStream outobject = null;
 
         try{
-            fos = new FileOutputStream(projectName);
+            fos = new FileOutputStream(fileName);
             out = new BufferedOutputStream(fos);
             outobject = new ObjectOutputStream(out);
 
@@ -55,6 +75,7 @@ public class SaveAndLoadManager {
 
 
     public static Object load(String fileName){
+        fileName = pathPrefix + fileName;
         FileInputStream fis = null;
         BufferedInputStream in = null;
         ObjectInputStream inobject = null;

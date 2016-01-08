@@ -228,7 +228,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                         }
                         return true;
                     case R.id.menu_nav_save:
-                        if (SaveAndLoadManager.save("file", layers)){
+                        if (SaveAndLoadManager.save("file.sb", layers)){
                             Toast.makeText(getApplicationContext(), "Succesvol opgeslagen.",
                                     Toast.LENGTH_LONG).show();
                         }else{

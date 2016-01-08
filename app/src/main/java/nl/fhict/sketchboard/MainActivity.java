@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SaveAndLoadManager.init();
+
         final AppBarLayout appBarLayout = (AppBarLayout)findViewById(R.id.main_appbar_layout);
 
         final RecyclerView recyclerView = (RecyclerView)findViewById(R.id.main_recycler);
