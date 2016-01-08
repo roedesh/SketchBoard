@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
     DrawingView drawingView;
     int yourStep = 10;
+    Canvas canvas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -276,7 +278,13 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
     public void addLayer(Layerable layer){
         this.layers.add(layer);
-        // Draw everything.
+        this.drawLayers();
+    }
+
+    public void drawLayers(){
+        for (Layerable layer : this.layers){
+            layer.draw(this.canvas);
+        }
     }
 
     public List<Layerable> getLayers(){
