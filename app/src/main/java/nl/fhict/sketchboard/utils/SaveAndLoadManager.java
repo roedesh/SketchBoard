@@ -19,17 +19,13 @@ public class SaveAndLoadManager {
     private static String pathPrefix;
 
     public static void init(){
-        File dir;
-        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))//check if sd card is mounted
-        {
-            dir=new File(Environment.getExternalStorageDirectory(),"SketchBoard");
+        File dir=new File(Environment.getExternalStorageDirectory(),"SketchBoard");
 
-            if(!dir.exists()){
-                dir.mkdirs();
-            }
-
-            pathPrefix = dir.getAbsolutePath() + File.separatorChar;
+        if(!dir.exists()){
+            dir.mkdirs();
         }
+
+        pathPrefix = dir.getAbsolutePath() + File.separatorChar;
     }
 
     public static boolean save(String fileName, Object object) {
