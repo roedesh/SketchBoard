@@ -4,5 +4,8 @@
     <string name="action_change_color">Verander kleur</string>
     <string name="title_change_color">Kies een kleur</string>
     <string name="action_stroke_width">Verander lijndikte</string>
+    <string name="action_image">Kies afbeelding</string>
+    <string name="action_text">Tekst</string>
     <string name="action_eraser">Gum</string>
+    <string name="action_save">Opslaan</string>
 </resources>

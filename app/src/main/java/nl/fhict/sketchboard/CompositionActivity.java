@@ -1,7 +1,13 @@
 package nl.fhict.sketchboard;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,9 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.larswerkman.holocolorpicker.OpacityBar;
@@ -31,6 +40,7 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
     private static final String FRAGMENT_TAG_DATA_PROVIDER = "data provider";
     private static final String FRAGMENT_LIST_VIEW = "list view";
+    private static final int RESULT_LOAD_IMAGE = 1;
 
     List<Layerable> layers = new ArrayList<>();
 
@@ -157,6 +167,38 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
                         else {
                             drawingView.setEraserMode(true);
                         }
+                        return true;
+                    case R.id.menu_nav_save:
+                        Toast.makeText(getApplicationContext(), "Test saving.",
+                                Toast.LENGTH_LONG).show();
+                        return true;
+                    case R.id.menu_nav_load_image:
+                        startActivityForResult(new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), RESULT_LOAD_IMAGE);
+                        return true;
+                    case R.id.menu_nav_insert_text:
+                        AlertDialog.Builder alert = new AlertDialog.Builder(CompositionActivity.this);
+
+                        alert.setTitle("Tekst");
+                        alert.setMessage("Voeg hier je tekst toe");
+
+                        // Set an EditText view to get user input
+                        final EditText input = new EditText(CompositionActivity.this);
+                        alert.setView(input);
+
+                        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                // Do something with value!
+                            }
+                        });
+
+                        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                // Canceled.
+                            }
+                        });
+
+                        alert.show();
+                        return true;
                     default:
                         return true;
                 }
@@ -166,6 +208,26 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
 
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            Cursor cursor = getContentResolver().query(selectedImage,filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            // Add 'BitmapFactory.decodeFile(picturePath)' as Layer to List.
+
+            // Original code:
+            // ImageView imageView = (ImageView) findViewById(R.id.imgView);
+            // imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+        }
     }
 
     @Override
