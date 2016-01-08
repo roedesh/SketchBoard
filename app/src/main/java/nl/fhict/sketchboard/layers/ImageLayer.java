@@ -30,7 +30,7 @@ public class ImageLayer implements Layerable {
 
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     @Override
