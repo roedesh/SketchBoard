@@ -10,9 +10,11 @@ import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +64,49 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
         mainLayout.addView(drawingView);
 
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+        final FloatingActionButton drawerbutton = (FloatingActionButton) findViewById(R.id.drawerbutton);
+
+        drawerbutton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.RIGHT);
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            }
+        });
+
+        final FloatingActionButton layoutbutton = (FloatingActionButton) findViewById(R.id.layerbutton);
+
+        layoutbutton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.LEFT);
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            }
+        });
+
+        drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
 
         layers.add(new LineLayer());
         layers.add(new LineLayer());
