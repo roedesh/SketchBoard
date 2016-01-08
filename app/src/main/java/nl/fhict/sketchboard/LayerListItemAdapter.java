@@ -32,6 +32,7 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemView
 
 import java.util.List;
 
+import nl.fhict.sketchboard.layers.Layerable;
 import nl.fhict.sketchboard.utils.DrawableUtils;
 import nl.fhict.sketchboard.utils.ViewUtils;
 
@@ -44,7 +45,7 @@ public class LayerListItemAdapter
     private interface Draggable extends DraggableItemConstants {
     }
 
-    private List<StableString> stableStringList;
+    private List<Layerable> layerableList;
 
     public static class MyViewHolder extends AbstractDraggableItemViewHolder {
         public FrameLayout container;
@@ -55,12 +56,12 @@ public class LayerListItemAdapter
             super(v);
             container = (FrameLayout) v.findViewById(R.id.container);
             dragHandle = v.findViewById(R.id.drag_handle);
-            textView = (TextView) v.findViewById(android.R.id.text1);
+            textView = (TextView) v.findViewById(R.id.text1);
         }
     }
 
-    public LayerListItemAdapter(List<StableString> dataProvider) {
-        stableStringList = dataProvider;
+    public LayerListItemAdapter(List<Layerable> layerableList) {
+        this.layerableList = layerableList;
 
         // DraggableItemAdapter requires stable ID, and also
         // have to implement the getItemId() method appropriately.
@@ -68,23 +69,18 @@ public class LayerListItemAdapter
     }
 
     @Override
-    public long getItemId(int position) {
-        return stableStringList.get(position).getId();
-    }
-
-    @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        final View v = inflater.inflate((viewType == 0) ? R.layout.list_item_draggable : R.layout.list_item2_draggable, parent, false);
+        final View v = inflater.inflate(R.layout.list_item_draggable, parent, false);
         return new MyViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        final StableString string = stableStringList.get(position);
+        final Layerable layer = layerableList.get(position);
 
         // set text
-        holder.textView.setText(string.getValue());
+        holder.textView.setText(layer.getName());
 
         // set background resource (target view ID: container)
         final int dragState = holder.getDragStateFlags();
@@ -109,7 +105,7 @@ public class LayerListItemAdapter
 
     @Override
     public int getItemCount() {
-        return stableStringList.size();
+        return layerableList.size();
     }
 
     @Override
@@ -120,8 +116,8 @@ public class LayerListItemAdapter
             return;
         }
 
-        final StableString item = stableStringList.remove(fromPosition);
-        stableStringList.add(toPosition, item);
+        final Layerable item = layerableList.remove(fromPosition);
+        layerableList.add(toPosition, item);
 
 
         notifyItemMoved(fromPosition, toPosition);

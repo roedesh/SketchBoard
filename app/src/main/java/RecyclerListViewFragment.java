@@ -21,6 +21,8 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 
 import java.util.List;
 
+import nl.fhict.sketchboard.layers.Layerable;
+
 /**
  * Created by ruudschroen on 07-01-16.
  */
@@ -106,7 +108,7 @@ public class RecyclerListViewFragment extends Fragment {
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
     }
 
-    public List<StableString> getDataProvider() {
-        return ((CompositionActivity) getActivity()).getStableString();
+    public List<Layerable> getDataProvider() {
+        return ((CompositionActivity) getActivity()).getLayers();
     }
 }

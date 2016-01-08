@@ -34,13 +34,14 @@
             android:background="#20000000"/>
 
         <TextView
-            android:id="@android:id/text1"
+            android:id="@+id/text1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="top|left"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
-            android:gravity="center"
+            android:paddingLeft="20dp"
+            android:gravity="center|left"
             tools:ignore="RtlHardcoded"/>
 
     </FrameLayout>

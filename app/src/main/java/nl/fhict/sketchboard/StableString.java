@@ -12,7 +12,7 @@ public class StableString implements Parcelable {
     private String value;
 
     public StableString(String value) {
-        value = value;
+        this.value = value;
         stableId = nextId;
         nextId++;
     }

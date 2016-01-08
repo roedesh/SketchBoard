@@ -8,17 +8,29 @@ import android.graphics.PointF;
 
 public class ImageLayer implements Layerable {
 
+    private static String PREFIX = "ImageLayer #";
+    private static long nextNumber = 1;
+    private String name;
     private Context context;
     private Bitmap image;
     private PointF point;
 
-    public ImageLayer(Bitmap image, PointF point){
+    public ImageLayer(long id, Bitmap image, PointF point){
+        this.name = PREFIX + 1;
         this.image = image;
         this.point = point;
+        nextNumber++;
     }
 
     public ImageLayer(Context context, int resourceId) {
+        this.name = PREFIX + 1;
         this.image = BitmapFactory.decodeResource(context.getResources(), resourceId);
+        nextNumber++;
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 
     @Override

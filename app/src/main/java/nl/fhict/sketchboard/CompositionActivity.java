@@ -24,12 +24,15 @@ import com.larswerkman.holocolorpicker.ValueBar;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.fhict.sketchboard.layers.Layerable;
+import nl.fhict.sketchboard.layers.LineLayer;
+
 public class CompositionActivity extends AppCompatActivity  implements ColorPicker.OnColorChangedListener {
 
     private static final String FRAGMENT_TAG_DATA_PROVIDER = "data provider";
     private static final String FRAGMENT_LIST_VIEW = "list view";
 
-    List<StableString> strings = new ArrayList<>();
+    List<Layerable> layers = new ArrayList<>();
 
     DrawingView drawingView;
     int yourStep = 10;
@@ -46,16 +49,14 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
 
-        strings.add(new StableString("Layer 1"));
-        strings.add(new StableString("Layer 2"));
-
+        layers.add(new LineLayer());
+        layers.add(new LineLayer());
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new nl.fhict.sketchboard.RecyclerListViewFragment(), FRAGMENT_LIST_VIEW)
                     .commit();
         }
-
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.main_nav);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -172,8 +173,8 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
 
     }
 
-    public List<StableString> getStableString(){
-        return strings;
+    public List<Layerable> getLayers(){
+        return layers;
     }
 
 }

@@ -7,6 +7,10 @@ import android.graphics.Canvas;
  */
 public interface Layerable {
 
+    String getName();
+
     void draw(Canvas canvas);
+
+
 
 }
