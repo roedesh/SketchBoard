@@ -171,6 +171,9 @@ public class CompositionActivity extends AppCompatActivity  implements ColorPick
                     case R.id.menu_nav_load_image:
                         startActivityForResult(new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), RESULT_LOAD_IMAGE);
                         return true;
+                    case R.id.menu_nav_insert_text:
+                        
+                        return true;
                     default:
                         return true;
                 }

@@ -15,5 +15,7 @@
     <item android:title="@string/action_image"
         android:icon="@drawable/ic_add"
         android:id="@+id/menu_nav_load_image"/>
->>>>>>> cc1fa815c0fada2f0dd86e3d74db950963351db8
+    <item android:title="@string/action_text"
+        android:icon="@drawable/ic_add"
+        android:id="@+id/menu_nav_insert_text"/>
 </menu>
