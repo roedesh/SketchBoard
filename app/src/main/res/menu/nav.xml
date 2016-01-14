@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Tekenen"
+        android:icon="@drawable/ic_action_new_drawing_layer"
+        android:id="@+id/menu_nav_change_size"/>
     <item android:title="@string/action_change_color"
         android:icon="@drawable/ic_change_color"
         android:id="@+id/menu_nav_change_color" />
-    <item android:title="@string/action_stroke_width"
-        android:icon="@drawable/ic_add"
-        android:id="@+id/menu_nav_change_size"/>
     <item android:title="@string/action_eraser"
         android:icon="@drawable/ic_eraser_grey600_24dp"
         android:id="@+id/menu_nav_switch_eraser"/>
-    <item android:title="@string/action_save"
-        android:icon="@drawable/ic_content_save_grey600_24dp"
-        android:id="@+id/menu_nav_save"/>
-    <item android:title="@string/action_new_drawing_layer"
-        android:icon="@drawable/ic_action_new_drawing_layer"
-        android:id="@+id/menu_nav_new_drawing_layer"/>
     <item android:title="@string/action_image"
         android:icon="@drawable/ic_file_image_grey600_24dp"
         android:id="@+id/menu_nav_load_image"/>
@@ -24,4 +18,7 @@
     <item android:title="Preview"
         android:icon="@drawable/ic_add"
         android:id="@+id/menu_nav_preview"/>
+    <item android:title="@string/action_save"
+        android:icon="@drawable/ic_content_save_grey600_24dp"
+        android:id="@+id/menu_nav_save"/>
 </menu>

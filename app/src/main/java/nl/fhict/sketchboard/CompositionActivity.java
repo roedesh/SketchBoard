@@ -88,7 +88,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                             Paint p = new Paint();
                             p.setColor(Color.BLACK);
                             p.setAntiAlias(true);
-                            p.setStrokeWidth(20);
+                            p.setStrokeWidth(drawingView.getStrokeWidth());
                             p.setStrokeCap(Paint.Cap.ROUND);
                             ((DrawingLayer) activeLayer).addPoint(new DrawingPoint(touchX, touchY, p));
                             break;
@@ -353,6 +353,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                         };
                         yourDialogSeekBar.setOnSeekBarChangeListener(yourSeekBarListener);
 
+                        addLayer(new DrawingLayer());
                         return true;
                     case R.id.menu_nav_switch_eraser:
                         if (drawingView.isInEraserMode()) {
@@ -360,9 +361,6 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                         } else {
                             drawingView.setEraserMode(true);
                         }
-                        return true;
-                    case R.id.menu_nav_new_drawing_layer:
-                        addLayer(new DrawingLayer());
                         return true;
                     case R.id.menu_nav_save:
                         final Dialog saveDialog = new Dialog(CompositionActivity.this);
