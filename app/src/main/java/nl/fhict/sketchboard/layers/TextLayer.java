@@ -39,6 +39,8 @@ public class TextLayer implements Layerable {
 
         out.writeObject(paint.getAlpha());
         out.writeObject(paint.getColor());
+        out.writeObject(paint.getTextSize());
+        out.writeObject(paint.getStrokeWidth());
         // Missing shit
     }
 
@@ -48,10 +50,14 @@ public class TextLayer implements Layerable {
 
         int alpha = (int) in.readObject();
         int color = (int) in.readObject();
+        int size = (int) in.readObject();
+        int width = (int) in.readObject();
 
         this.paint = new Paint();
         this.paint.setAlpha(alpha);
         this.paint.setColor(color);
+        this.paint.setTextSize(size);
+        this.paint.setStrokeWidth(width);
         // Missing shit
     }
 }
