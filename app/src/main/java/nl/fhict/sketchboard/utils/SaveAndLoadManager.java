@@ -10,6 +10,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by arjan on 8-1-2016.
@@ -108,5 +110,19 @@ public class SaveAndLoadManager {
             }
         }
         return null;
+    }
+
+    public static List<Object> loadAll(){
+        List<Object> tempObjects = new ArrayList<>();
+        File tempDir = new File(pathPrefix);
+        if (tempDir.exists()){
+            for (File f : tempDir.listFiles()){
+                Object o = load(f.getName());
+                if (o != null){
+                    tempObjects.add(o);
+                }
+            }
+        }
+        return tempObjects;
     }
 }
