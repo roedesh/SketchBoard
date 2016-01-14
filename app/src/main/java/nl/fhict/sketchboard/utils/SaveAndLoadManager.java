@@ -19,7 +19,7 @@ public class SaveAndLoadManager {
     private static String pathPrefix;
 
     public static void init(){
-        File dir=new File(Environment.getExternalStorageDirectory(),"SketchBoard");
+        File dir = new File(Environment.getExternalStorageDirectory(),"SketchBoard");
 
         if(!dir.exists()){
             dir.mkdirs();
@@ -30,8 +30,8 @@ public class SaveAndLoadManager {
 
     public static boolean save(String fileName, Object object) {
         fileName = pathPrefix + fileName;
-        FileOutputStream fos= null;
-        BufferedOutputStream out= null;
+        FileOutputStream fos = null;
+        BufferedOutputStream out = null;
         ObjectOutputStream outobject = null;
 
         try{
