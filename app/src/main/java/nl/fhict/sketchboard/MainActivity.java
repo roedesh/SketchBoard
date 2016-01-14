@@ -86,8 +86,10 @@ public class MainActivity extends AppCompatActivity {
             if(e.getObject() instanceof RecentWrapper)
             {
                 if(index == 0) {
-                    ImageLayer bt = (ImageLayer) ((RecentWrapper) e.getObject()).getLayers().get(index);
-                    boardtype = bt.getImage();
+                    if(((RecentWrapper) e.getObject()).getLayers().get(0) instanceof ImageLayer) {
+                        ImageLayer bt = (ImageLayer) ((RecentWrapper) e.getObject()).getLayers().get(index);
+                        boardtype = bt.getImage();
+                    }
                 }
                 recents.add(new BitmapWrapper(e.getName(), ((RecentWrapper) e.getObject()).getRecentmap()));
             }

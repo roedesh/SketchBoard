@@ -76,7 +76,8 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
 
         if (getIntent().hasExtra("File")) {
-            RecentWrapper rw = (RecentWrapper) getIntent().getSerializableExtra("File");
+           RecentWrapper rw = (RecentWrapper) MainActivity.recentDesign;
+            boardtype = MainActivity.boardtype;
             if (rw != null) {
                 this.layers = rw.getLayers();
                 // update & draw
