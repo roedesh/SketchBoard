@@ -70,10 +70,10 @@ public class MainActivity extends AppCompatActivity {
         final RecyclerView overlay = (RecyclerView)findViewById(R.id.main_overlay_recycler);
         overlay.setLayoutManager(new LinearLayoutManager(this));
         final ArrayList<Integer> templates = new ArrayList<>();
-        templates.add(R.drawable.skatetemplate);
-        templates.add(R.drawable.skatetemplate2);
-        templates.add(R.drawable.skatetemplate3);
-        final NewBoardRecyclerAdapter adapternewb = new NewBoardRecyclerAdapter(templates);
+        templates.add(R.drawable.longboard2);
+        templates.add(R.drawable.longbord1);
+        templates.add(R.drawable.skateboard1);
+        final NewBoardRecyclerAdapter adapternewb = new NewBoardRecyclerAdapter(templates,this);
         overlay.setAdapter(adapternewb);
         adapternewb.setOnItemClickListener(new NewBoardRecyclerAdapter.OnItemClickListener() {
             @Override
