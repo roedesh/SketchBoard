@@ -18,6 +18,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -127,11 +128,11 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         getWindowManager().getDefaultDisplay().getMetrics(display);
         int chosenBoard = getIntent().getIntExtra("NewBoard", 1);
         if(chosenBoard == 1){
-            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.skatetemplate), display.heightPixels, display.widthPixels);
+            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.skateboard1), display.heightPixels, display.widthPixels);
         }else if(chosenBoard == 2){
-            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.skatetemplate2), display.heightPixels, display.widthPixels);
+            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longbord1), display.heightPixels, display.widthPixels);
         }else{
-            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.skatetemplate3), display.heightPixels, display.widthPixels);
+            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longboard2), display.heightPixels, display.widthPixels);
         }
         layers.add(new ImageLayer(skateboard, new PointF(0, 0)));
         this.drawLayers();
@@ -439,10 +440,16 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
     }
 
     public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
+        int actionBarHeight = 168;//default actionbar height bij mij
+        TypedValue tv = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        }
         int width = bm.getWidth();
         int height = bm.getHeight();
         float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
+        float scaleHeight = ((float) newHeight - (actionBarHeight/2)) / height;
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
         Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
