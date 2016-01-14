@@ -21,7 +21,8 @@ import nl.fhict.sketchboard.utils.SaveAndLoadManager;
 public class MainActivity extends AppCompatActivity {
     private boolean mFabIsInCrossState = false;
 
-
+    // Te groot om mee te geven via Intent dus dan maar zo.
+    public static RecentWrapper recentDesign;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,17 +41,11 @@ public class MainActivity extends AppCompatActivity {
         {
             if(e.getObject() instanceof RecentWrapper)
             {
-                RecentWrapper wrapper = (RecentWrapper) e.getObject();
-
-                Matrix matrix = new Matrix();
-                matrix.postRotate(90);
-
-                Bitmap rotatedBitmap = Bitmap.createBitmap(wrapper.getRecentmap() , 0, 0, wrapper.getRecentmap() .getWidth(), wrapper.getRecentmap() .getHeight(), matrix, true);
-                recents.add(new BitmapWrapper(e.getName(), rotatedBitmap));
+                   recents.add(new BitmapWrapper(e.getName(), ((RecentWrapper) e.getObject()).getRecentmap()));
             }
         }
 
-        final TestRecyclerAdapter adapter = new TestRecyclerAdapter(recents);
+        final TestRecyclerAdapter adapter = new TestRecyclerAdapter(recents, this);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(new TestRecyclerAdapter.OnItemClickListener() {
             @Override
@@ -58,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
                 Object object = SaveAndLoadManager.load(text);
                 if (object != null) {
                     Intent intent = new Intent(MainActivity.this, CompositionActivity.class);
-                    intent.putExtra("File", (RecentWrapper) object);
+                    recentDesign = (RecentWrapper) object;
+                    intent.putExtra("File", "Lulz"/*(RecentWrapper) object*/);
                     startActivity(intent);
                 } else {
                     Toast.makeText(getApplicationContext(), "Openen mislukt.",
