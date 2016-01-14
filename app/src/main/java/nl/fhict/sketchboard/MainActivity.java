@@ -8,6 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
+
+import java.util.List;
+
+import nl.fhict.sketchboard.layers.LayerWrapper;
+import nl.fhict.sketchboard.layers.Layerable;
+import nl.fhict.sketchboard.utils.SaveAndLoadManager;
 
 import java.util.ArrayList;
 
@@ -19,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SaveAndLoadManager.init();
+
         final AppBarLayout appBarLayout = (AppBarLayout)findViewById(R.id.main_appbar_layout);
 
         final RecyclerView recyclerView = (RecyclerView)findViewById(R.id.main_recycler);
@@ -28,7 +37,15 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new TestRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(String text) {
-                startActivity(new Intent(MainActivity.this, CompositionActivity.class));
+                Object object = SaveAndLoadManager.load(text);
+                if (object != null) {
+                    Intent intent = new Intent(MainActivity.this, CompositionActivity.class);
+                    intent.putExtra("File", new LayerWrapper((List<Layerable>) object));
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Openen mislukt.",
+                            Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -38,7 +55,14 @@ public class MainActivity extends AppCompatActivity {
         templates.add(R.drawable.skatetemplate);
         templates.add(R.drawable.skatetemplate2);
         templates.add(R.drawable.skatetemplate3);
-        overlay.setAdapter(new NewBoardRecyclerAdapter(templates));
+        final NewBoardRecyclerAdapter adapternewb = new NewBoardRecyclerAdapter(templates);
+        overlay.setAdapter(adapternewb);
+        adapternewb.setOnItemClickListener(new NewBoardRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(String text) {
+                startActivity(new Intent(MainActivity.this, CompositionActivity.class));
+            }
+        });
 
         final FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.main_fab);
         fab.setOnClickListener(new View.OnClickListener() {
