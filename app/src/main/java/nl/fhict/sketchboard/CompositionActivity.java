@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -503,7 +506,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                         previewDialog.setContentView(previewlayout);
 
                         final ImageView previewimage = (ImageView) previewlayout.findViewById(R.id.previewdialog_image);
-                        previewimage.setImageBitmap(drawingView.getCanvasBitmap());
+                        previewimage.setImageBitmap( maskpreview(drawingView.getCanvasBitmap()));
                         previewDialog.show();
 
 
@@ -592,5 +595,35 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
             }
         }
         return true;
+    }
+
+    public Bitmap maskpreview(Bitmap s)
+    {
+        Bitmap original = s;
+        DisplayMetrics display = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(display);
+        Bitmap mask = BitmapFactory.decodeResource(getResources(), R.drawable.longbord1);
+        int chosenBoard = getIntent().getIntExtra("NewBoard", 1);
+        if(chosenBoard == 0){
+            mask = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.longboard2), display.heightPixels, display.widthPixels);
+        }else if(chosenBoard == 1){
+            mask = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.longbord1), display.heightPixels, display.widthPixels);
+        }else if(chosenBoard == 2){
+            mask = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.skateboard1), display.heightPixels, display.widthPixels);
+        }
+
+        //You can change original image here and draw anything you want to be masked on it.
+
+        Bitmap result = Bitmap.createBitmap(mask.getWidth(), mask.getHeight(), Bitmap.Config.ARGB_8888);
+
+
+        Canvas tempCanvas = new Canvas(result);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+        tempCanvas.drawBitmap(original, 0, 0, null);
+        tempCanvas.drawBitmap(mask, 0, 0, paint);
+        paint.setXfermode(null);
+
+        return result;
     }
 }
