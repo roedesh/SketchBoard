@@ -74,17 +74,6 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         setContentView(R.layout.activity_composition);
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_linear_layout);
 
-
-        if (getIntent().hasExtra("File")) {
-            RecentWrapper rw = (RecentWrapper) getIntent().getSerializableExtra("File");
-            if (rw != null) {
-                this.layers = rw.getLayers();
-                // update & draw
-            }
-        } else if (getIntent().hasExtra("NewBoard")) {
-            ////Hier lad je nieuwe board in.
-        }
-
         // Creates a new drawing view and adds it to the main linear layout.
         drawingView = new DrawingView(getApplicationContext());
         drawingView.setOnTouchListener(new View.OnTouchListener() {
@@ -207,35 +196,6 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
             }
         });
-
-
-        Bitmap skateboard = null;
-        DisplayMetrics display = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(display);
-        int chosenBoard = getIntent().getIntExtra("NewBoard", 1);
-        if (chosenBoard == 1) {
-            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.skateboard1), display.heightPixels, display.widthPixels);
-        } else if (chosenBoard == 2) {
-            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.longbord1), display.heightPixels, display.widthPixels);
-        } else {
-            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.longboard2), display.heightPixels, display.widthPixels);
-        }
-        layers.add(new ImageLayer(skateboard, new PointF(0, 0)));
-        this.drawLayers();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (drawingView.getCanvas() == null) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        return;
-                    }
-                }
-                drawLayers();
-            }
-        }).start();
 
         nl.fhict.sketchboard.RecyclerListViewFragment fragment = new nl.fhict.sketchboard.RecyclerListViewFragment();
 
