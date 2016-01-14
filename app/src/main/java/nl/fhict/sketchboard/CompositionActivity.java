@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
@@ -22,6 +23,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -41,6 +43,8 @@ import com.larswerkman.holocolorpicker.ValueBar;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.fhict.sketchboard.layers.DrawingLayer;
+import nl.fhict.sketchboard.layers.DrawingPoint;
 import nl.fhict.sketchboard.layers.ImageLayer;
 import nl.fhict.sketchboard.layers.Layerable;
 import nl.fhict.sketchboard.layers.TextLayer;
@@ -54,6 +58,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
     private static final int RESULT_LOAD_IMAGE = 1;
 
     List<Layerable> layers = new ArrayList<>();
+    Layerable activeLayer;
 
     DrawingView drawingView;
     int yourStep = 10;
@@ -76,6 +81,33 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
         // Creates a new drawing view and adds it to the main linear layout.
         drawingView = new DrawingView(getApplicationContext());
+        drawingView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (activeLayer != null && activeLayer instanceof DrawingLayer){
+                    float touchX = event.getX();
+                    float touchY = event.getY();
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            Paint p = new Paint();
+                            p.setColor(Color.BLACK);
+                            p.setAntiAlias(true);
+                            p.setStrokeWidth(20);
+                            p.setStrokeCap(Paint.Cap.ROUND);
+                            ((DrawingLayer) activeLayer).addPoint(new DrawingPoint(touchX, touchY, p));
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            break;
+                        default:
+                            return false;
+                    }
+                    drawLayers();
+                }
+                return true;
+            }
+        });
         mainLayout.addView(drawingView);
 
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
@@ -256,6 +288,9 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                             drawingView.setEraserMode(true);
                         }
                         return true;
+                    case R.id.menu_nav_new_drawing_layer:
+                        addLayer(new DrawingLayer());
+                        return true;
                     case R.id.menu_nav_save:
                         final Dialog saveDialog = new Dialog(CompositionActivity.this);
                         LayoutInflater saveInflater = (LayoutInflater) CompositionActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -418,6 +453,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
     public void addLayer(Layerable layer) {
         this.layers.add(layer);
+        activeLayer = layers.get(layers.size() - 1);
         Fragment frg = null;
         frg = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -433,6 +469,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                 layer.draw(this.drawingView.getCanvas());
             }
         }
+        drawingView.invalidate();
     }
 
     public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {

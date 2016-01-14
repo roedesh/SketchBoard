@@ -80,7 +80,7 @@ public class LayerListItemAdapter
         final Layerable layer = layerableList.get(position);
 
         // set text
-        holder.textView.setText(layer.getName());
+        holder.textView.setText(layer.getName().getValue());
 
         // set background resource (target view ID: container)
         final int dragState = holder.getDragStateFlags();
@@ -101,6 +101,11 @@ public class LayerListItemAdapter
 
             holder.container.setBackgroundResource(bgResId);
         }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return layerableList.get(position).getName().getId();
     }
 
     @Override

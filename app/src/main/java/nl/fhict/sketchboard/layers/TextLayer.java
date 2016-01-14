@@ -2,30 +2,29 @@ package nl.fhict.sketchboard.layers;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.PointF;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
+
+import nl.fhict.sketchboard.StableString;
 
 public class TextLayer implements Layerable {
 
     private static String PREFIX = "TextLayer #";
     private static long nextNumber = 1;
-    private String name;
+    private StableString name;
     private String text;
     private Paint paint;
 
     public TextLayer(String text, Paint paint){
-        name = PREFIX + nextNumber++;
+        name = new StableString(PREFIX + nextNumber++);
         this.text = text;
         this.paint = paint;
     }
 
     @Override
-    public String getName() {
+    public StableString getName() {
         return name;
     }
 
@@ -44,7 +43,7 @@ public class TextLayer implements Layerable {
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
-        this.name = (String) in.readObject();
+        this.name = (StableString) in.readObject();
         this.text = (String) in.readObject();
 
         int alpha = (int) in.readObject();
