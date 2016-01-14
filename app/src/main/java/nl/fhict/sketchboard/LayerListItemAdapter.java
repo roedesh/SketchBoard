@@ -126,30 +126,36 @@ public class LayerListItemAdapter
 
     @Override
     public void onMoveItem(int fromPosition, int toPosition) {
-        Log.d(TAG, "onMoveItem(fromPosition = " + fromPosition + ", toPosition = " + toPosition + ")");
+        if(fromPosition != 0 && toPosition != 0) {
+            Log.d(TAG, "onMoveItem(fromPosition = " + fromPosition + ", toPosition = " + toPosition + ")");
 
-        if (fromPosition == toPosition) {
-            return;
+            if (fromPosition == toPosition) {
+                return;
+            }
+
+
+            final Layerable item = layerableList.remove(fromPosition);
+            layerableList.add(toPosition, item);
+
+
+            notifyItemMoved(fromPosition, toPosition);
+            ((CompositionActivity) parentFragment.getActivity()).drawLayers();
         }
-
-        final Layerable item = layerableList.remove(fromPosition);
-        layerableList.add(toPosition, item);
-
-
-        notifyItemMoved(fromPosition, toPosition);
-        ((CompositionActivity) parentFragment.getActivity()).drawLayers();
     }
 
     @Override
     public boolean onCheckCanStartDrag(MyViewHolder holder, int position, int x, int y) {
         // x, y --- relative from the itemView's top-left
-        final View containerView = holder.container;
-        final View dragHandleView = holder.dragHandle;
+        if(position!= 0) {
+            final View containerView = holder.container;
+            final View dragHandleView = holder.dragHandle;
 
-        final int offsetX = containerView.getLeft() + (int) (ViewCompat.getTranslationX(containerView) + 0.5f);
-        final int offsetY = containerView.getTop() + (int) (ViewCompat.getTranslationY(containerView) + 0.5f);
+            final int offsetX = containerView.getLeft() + (int) (ViewCompat.getTranslationX(containerView) + 0.5f);
+            final int offsetY = containerView.getTop() + (int) (ViewCompat.getTranslationY(containerView) + 0.5f);
 
-        return ViewUtils.hitTest(dragHandleView, x - offsetX, y - offsetY);
+            return ViewUtils.hitTest(dragHandleView, x - offsetX, y - offsetY);
+        }
+        return false;
     }
 
     @Override
