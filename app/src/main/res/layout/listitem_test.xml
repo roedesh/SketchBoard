@@ -6,4 +6,5 @@
     android:background="?selectableItemBackground"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
+    android:scaleType="center"
     android:id="@+id/listitem_test_text" />
