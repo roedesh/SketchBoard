@@ -1,6 +1,7 @@
 package nl.fhict.sketchboard;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.fhict.sketchboard.layers.ImageLayer;
 import nl.fhict.sketchboard.utils.RecentWrapper;
 import nl.fhict.sketchboard.utils.SaveAndLoadManager;
 
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Te groot om mee te geven via Intent dus dan maar zo.
     public static RecentWrapper recentDesign;
+    public static Bitmap boardtype;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,16 +74,25 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     private void loadRecent(){
         ArrayList<BitmapWrapper> recents = new ArrayList<>();
-
+        boardtype = null;
         List<NameObject> objects = SaveAndLoadManager.loadAll(10);
+
+        int index = 0;
         for(NameObject e : objects)
         {
             if(e.getObject() instanceof RecentWrapper)
             {
+                if(index == 0) {
+                    ImageLayer bt = (ImageLayer) ((RecentWrapper) e.getObject()).getLayers().get(index);
+                    boardtype = bt.getImage();
+                }
                 recents.add(new BitmapWrapper(e.getName(), ((RecentWrapper) e.getObject()).getRecentmap()));
             }
+            index++;
+            System.out.println(boardtype);
         }
 
         final RecyclerView recyclerView = (RecyclerView)findViewById(R.id.main_recycler);

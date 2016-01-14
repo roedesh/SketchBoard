@@ -61,7 +61,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
     private static final String FRAGMENT_TAG_DATA_PROVIDER = "data provider";
     private static final String FRAGMENT_LIST_VIEW = "list view";
     private static final int RESULT_LOAD_IMAGE = 1;
-
+    private Bitmap boardtype;
     List<Layerable> layers = new ArrayList<>();
     Layerable activeLayer;
 
@@ -118,6 +118,8 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
         if (getIntent().hasExtra("File")) {
             RecentWrapper rw = MainActivity.recentDesign;
+            this.boardtype = MainActivity.boardtype;
+            System.out.println("hij komt hier wel aan");
             //RecentWrapper rw = (RecentWrapper) getIntent().getSerializableExtra("File");
 
             if (rw != null){
@@ -586,13 +588,20 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         DisplayMetrics display = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(display);
         Bitmap mask = BitmapFactory.decodeResource(getResources(), R.drawable.longbord1);
-        int chosenBoard = getIntent().getIntExtra("NewBoard", 1);
-        if(chosenBoard == 0){
-            mask = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.longboard2), display.heightPixels, display.widthPixels);
-        }else if(chosenBoard == 1){
-            mask = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.longbord1), display.heightPixels, display.widthPixels);
-        }else if(chosenBoard == 2){
-            mask = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.skateboard1), display.heightPixels, display.widthPixels);
+        if(boardtype == null) {
+            int chosenBoard = getIntent().getIntExtra("NewBoard", 1);
+            if (chosenBoard == 0) {
+                mask = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.longboard2), display.heightPixels, display.widthPixels);
+            } else if (chosenBoard == 1) {
+                mask = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.longbord1), display.heightPixels, display.widthPixels);
+            } else if (chosenBoard == 2) {
+                mask = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.skateboard1), display.heightPixels, display.widthPixels);
+            }
+        }
+        else
+        {
+            System.out.println("niet null");
+            mask = getResizedBitmap(boardtype, display.heightPixels, display.widthPixels);
         }
 
         //You can change original image here and draw anything you want to be masked on it.

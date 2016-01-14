@@ -35,6 +35,10 @@ public class ImageLayer implements Layerable {
         this.image = BitmapFactory.decodeResource(context.getResources(), resourceId);
     }
 
+    public Bitmap getImage() {
+        return image;
+    }
+
     @Override
     public StableString getName() {
         return name;
@@ -58,6 +62,7 @@ public class ImageLayer implements Layerable {
         out.writeObject(imageByteArray);
     }
 
+
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
         this.name = (StableString) in.readObject();
 
@@ -67,4 +72,6 @@ public class ImageLayer implements Layerable {
         byte[] imageByteArray = (byte[]) in.readObject();
         this.image = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
     }
+
+
 }
