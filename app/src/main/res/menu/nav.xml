@@ -7,15 +7,15 @@
         android:icon="@drawable/ic_add"
         android:id="@+id/menu_nav_change_size"/>
     <item android:title="@string/action_eraser"
-        android:icon="@drawable/ic_add"
+        android:icon="@drawable/ic_eraser_grey600_24dp"
         android:id="@+id/menu_nav_switch_eraser"/>
     <item android:title="@string/action_save"
-        android:icon="@drawable/ic_add"
+        android:icon="@drawable/ic_content_save_grey600_24dp"
         android:id="@+id/menu_nav_save"/>
     <item android:title="@string/action_image"
-        android:icon="@drawable/ic_add"
+        android:icon="@drawable/ic_file_image_grey600_24dp"
         android:id="@+id/menu_nav_load_image"/>
     <item android:title="@string/action_text"
-        android:icon="@drawable/ic_add"
+        android:icon="@drawable/ic_format_text_grey600_24dp"
         android:id="@+id/menu_nav_insert_text"/>
 </menu>
