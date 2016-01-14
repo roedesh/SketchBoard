@@ -87,7 +87,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                             break;
                         case MotionEvent.ACTION_MOVE:
                             Paint p = new Paint();
-                            p.setColor(Color.BLACK);
+                            p.setColor(drawingView.getPaintColor());
                             p.setAntiAlias(true);
                             p.setStrokeWidth(drawingView.getStrokeWidth());
                             p.setStrokeCap(Paint.Cap.ROUND);
