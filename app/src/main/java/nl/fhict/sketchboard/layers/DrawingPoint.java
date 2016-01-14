@@ -1,7 +1,6 @@
 package nl.fhict.sketchboard.layers;
 
 import android.graphics.Paint;
-import android.graphics.PointF;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,7 +10,10 @@ import java.io.Serializable;
 /**
  * Created by ruudschroen on 14-01-16.
  */
-public class DrawingPoint extends PointF implements Serializable {
+public class DrawingPoint implements Serializable {
+
+    private float x;
+    private float y;
 
     private Paint paint;
 
@@ -23,6 +25,14 @@ public class DrawingPoint extends PointF implements Serializable {
 
     public Paint getPaint(){
         return paint;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
