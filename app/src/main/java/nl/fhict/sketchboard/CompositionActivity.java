@@ -70,7 +70,8 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_linear_layout);
 
         if (getIntent().hasExtra("File")) {
-            RecentWrapper rw = (RecentWrapper) getIntent().getSerializableExtra("File");
+            RecentWrapper rw = MainActivity.recentDesign;
+            //RecentWrapper rw = (RecentWrapper) getIntent().getSerializableExtra("File");
             if (rw != null){
                 this.layers = rw.getLayers();
                 // update & draw
@@ -167,7 +168,6 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
             skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longboard2), display.heightPixels, display.widthPixels);
         }
         layers.add(new ImageLayer(skateboard, new PointF(0, 0)));
-        this.drawLayers();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -308,6 +308,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                             public void onClick(View v) {
                                 String fileName = saveEditText.getText().toString();
                                 if (isAlpha(fileName)) {
+
                                     if (SaveAndLoadManager.save(fileName + ".sb", new RecentWrapper(layers, drawingView.getCanvasBitmap()))) {
                                         Toast.makeText(getApplicationContext(), "Succesvol opgeslagen.",
                                                 Toast.LENGTH_LONG).show();

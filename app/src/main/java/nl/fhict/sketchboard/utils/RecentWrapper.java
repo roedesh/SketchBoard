@@ -39,10 +39,12 @@ public class RecentWrapper implements Serializable {
         byte[] imageByteArray = stream.toByteArray();
 
         out.writeObject(imageByteArray);
+        out.writeObject(layers);
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
         byte[] imageByteArray = (byte[]) in.readObject();
         this.recentmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+        this.layers = (List<Layerable>) in.readObject();
     }
 }

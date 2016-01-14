@@ -21,7 +21,8 @@ import nl.fhict.sketchboard.utils.SaveAndLoadManager;
 public class MainActivity extends AppCompatActivity {
     private boolean mFabIsInCrossState = false;
 
-
+    // Te groot om mee te geven via Intent dus dan maar zo.
+    public static RecentWrapper recentDesign;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
                 Object object = SaveAndLoadManager.load(text);
                 if (object != null) {
                     Intent intent = new Intent(MainActivity.this, CompositionActivity.class);
-                    intent.putExtra("File", (RecentWrapper) object);
+                    recentDesign = (RecentWrapper) object;
+                    intent.putExtra("File", "Lulz"/*(RecentWrapper) object*/);
                     startActivity(intent);
                 } else {
                     Toast.makeText(getApplicationContext(), "Openen mislukt.",
