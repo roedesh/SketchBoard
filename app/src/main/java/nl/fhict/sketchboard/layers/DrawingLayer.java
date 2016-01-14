@@ -31,7 +31,7 @@ public class DrawingLayer implements Layerable {
     @Override
     public void draw(Canvas canvas) {
         for (DrawingPoint point : points) {
-            canvas.drawPoint(point.x, point.y, point.getPaint());
+            canvas.drawPoint(point.getX(), point.getY(), point.getPaint());
         }
     }
 }
