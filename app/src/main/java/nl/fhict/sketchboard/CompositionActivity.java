@@ -70,6 +70,8 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                 this.layers = lw.getLayers();
                 // update & draw
             }
+        } else if (getIntent().hasExtra("NewBoard")) {
+            ////Hier lad je nieuwe board in.
         }
 
         // Creates a new drawing view and adds it to the main linear layout.

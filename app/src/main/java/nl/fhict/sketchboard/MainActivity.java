@@ -1,6 +1,7 @@
 package nl.fhict.sketchboard;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -32,7 +33,10 @@ public class MainActivity extends AppCompatActivity {
 
         final RecyclerView recyclerView = (RecyclerView)findViewById(R.id.main_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        final TestRecyclerAdapter adapter = new TestRecyclerAdapter("RECENT DESIGN");
+        ArrayList<Bitmap> recents = new ArrayList<>();
+
+
+        final TestRecyclerAdapter adapter = new TestRecyclerAdapter(recents);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(new TestRecyclerAdapter.OnItemClickListener() {
             @Override
@@ -51,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         final RecyclerView overlay = (RecyclerView)findViewById(R.id.main_overlay_recycler);
         overlay.setLayoutManager(new LinearLayoutManager(this));
-        ArrayList<Integer> templates = new ArrayList<>();
+        final ArrayList<Integer> templates = new ArrayList<>();
         templates.add(R.drawable.skatetemplate);
         templates.add(R.drawable.skatetemplate2);
         templates.add(R.drawable.skatetemplate3);
@@ -60,7 +64,10 @@ public class MainActivity extends AppCompatActivity {
         adapternewb.setOnItemClickListener(new NewBoardRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(String text) {
-                startActivity(new Intent(MainActivity.this, CompositionActivity.class));
+                Intent intent = new Intent(MainActivity.this, CompositionActivity.class);
+                intent.putExtra("NewBoard", templates.get(Integer.valueOf(text)));
+                System.out.println(text);
+                startActivity(intent);
             }
         });
 

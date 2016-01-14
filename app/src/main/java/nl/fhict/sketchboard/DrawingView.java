@@ -165,6 +165,9 @@ public class DrawingView extends View {
         return drawPaint;
     }
 
+    public Bitmap getCanvasBitmap() {
+        return canvasBitmap;
+    }
 
     public boolean isInEraserMode() {
         return eraserMode;
