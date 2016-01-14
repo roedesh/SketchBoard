@@ -34,6 +34,7 @@ public class DrawingPoint extends PointF implements Serializable {
         out.writeObject(paint.getTextSize());
         out.writeObject(paint.getStrokeWidth());
         out.writeObject(paint.getStrokeCap());
+        out.writeObject(paint.isAntiAlias());
         // Missing shit
     }
 
@@ -46,6 +47,7 @@ public class DrawingPoint extends PointF implements Serializable {
         float size = (float) in.readObject();
         float width = (float) in.readObject();
         Paint.Cap cap = (Paint.Cap) in.readObject();
+        boolean aa = (boolean) in.readObject();
 
         this.paint = new Paint();
         this.paint.setAlpha(alpha);
@@ -53,6 +55,7 @@ public class DrawingPoint extends PointF implements Serializable {
         this.paint.setTextSize(size);
         this.paint.setStrokeWidth(width);
         this.paint.setStrokeCap(cap);
+        this.paint.setAntiAlias(aa);
         // Missing shit
     }
 
