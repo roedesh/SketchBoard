@@ -50,8 +50,8 @@ public class TextLayer implements Layerable {
 
         int alpha = (int) in.readObject();
         int color = (int) in.readObject();
-        int size = (int) in.readObject();
-        int width = (int) in.readObject();
+        float size = (float) in.readObject();
+        float width = (float) in.readObject();
 
         this.paint = new Paint();
         this.paint.setAlpha(alpha);
