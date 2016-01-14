@@ -528,7 +528,10 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
 
-            addLayer(new ImageLayer(BitmapFactory.decodeFile(picturePath), new PointF(5, 5)));
+            Bitmap map = BitmapFactory.decodeFile(picturePath);
+            map = getResizedBitmap(map, map.getHeight()/5, map.getWidth()/5);
+
+            addLayer(new ImageLayer(map, new PointF(5, 5)));
         }
     }
 
