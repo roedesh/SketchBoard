@@ -1,7 +1,10 @@
 package nl.fhict.sketchboard.utils;
 
+import android.os.Environment;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,13 +16,26 @@ import java.io.ObjectOutputStream;
  */
 public class SaveAndLoadManager {
 
-    public boolean save(String projectName, Object object) {
+    private static String pathPrefix;
+
+    public static void init(){
+        File dir=new File(Environment.getExternalStorageDirectory(),"SketchBoard");
+
+        if(!dir.exists()){
+            dir.mkdirs();
+        }
+
+        pathPrefix = dir.getAbsolutePath() + File.separatorChar;
+    }
+
+    public static boolean save(String fileName, Object object) {
+        fileName = pathPrefix + fileName;
         FileOutputStream fos= null;
         BufferedOutputStream out= null;
         ObjectOutputStream outobject = null;
 
         try{
-            fos = new FileOutputStream(projectName);
+            fos = new FileOutputStream(fileName);
             out = new BufferedOutputStream(fos);
             outobject = new ObjectOutputStream(out);
 
@@ -29,17 +45,23 @@ public class SaveAndLoadManager {
             e.printStackTrace();
         }finally {
             try {
-                outobject.close();
+                if (outobject != null){
+                    outobject.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                out.close();
+                if (out != null){
+                    out.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                fos.close();
+                if (fos != null){
+                    fos.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -48,35 +70,39 @@ public class SaveAndLoadManager {
     }
 
 
-    public Object load(String fileName){
-        FileInputStream fos = null;
-        BufferedInputStream out = null;
-        ObjectInputStream outobject = null;
+    public static Object load(String fileName){
+        fileName = pathPrefix + fileName;
+        FileInputStream fis = null;
+        BufferedInputStream in = null;
+        ObjectInputStream inobject = null;
 
         try{
-            fos = new FileInputStream(fileName);
-            out = new BufferedInputStream(fos);
-            outobject = new ObjectInputStream(out);
+            fis = new FileInputStream(fileName);
+            in = new BufferedInputStream(fis);
+            inobject = new ObjectInputStream(in);
 
-            Object object = outobject.readObject();
-
-            return object;
-
+            return inobject.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
             try {
-                outobject.close();
+                if (inobject != null){
+                    inobject.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                out.close();
+                if (in != null){
+                    in.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                fos.close();
+                if (fis != null){
+                    fis.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

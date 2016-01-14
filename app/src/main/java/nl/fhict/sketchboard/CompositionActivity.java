@@ -39,9 +39,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.fhict.sketchboard.layers.ImageLayer;
+import nl.fhict.sketchboard.layers.LayerWrapper;
 import nl.fhict.sketchboard.layers.Layerable;
 import nl.fhict.sketchboard.layers.LineLayer;
 import nl.fhict.sketchboard.layers.TextLayer;
+import nl.fhict.sketchboard.utils.SaveAndLoadManager;
 
 public class CompositionActivity extends AppCompatActivity implements ColorPicker.OnColorChangedListener {
 
@@ -59,6 +61,14 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_composition);
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_linear_layout);
+
+        if (getIntent().hasExtra("File")) {
+            LayerWrapper lw = (LayerWrapper) getIntent().getSerializableExtra("File");
+            if (lw != null){
+                this.layers = lw.getLayers();
+                // update & draw
+            }
+        }
 
         // Creates a new drawing view and adds it to the main linear layout.
         drawingView = new DrawingView(getApplicationContext());
@@ -218,8 +228,34 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                         }
                         return true;
                     case R.id.menu_nav_save:
-                        Toast.makeText(getApplicationContext(), "Test saving.",
-                                Toast.LENGTH_LONG).show();
+                        AlertDialog.Builder alert2 = new AlertDialog.Builder(CompositionActivity.this);
+
+                        alert2.setTitle("Naam");
+                        alert2.setMessage("Voeg hier de naam van het ontwerp toe");
+
+                        // Set an EditText view to get user input
+                        final EditText input2 = new EditText(CompositionActivity.this);
+                        alert2.setView(input2);
+
+                        alert2.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                String fileName = input2.getText().toString();
+                                if (isAlpha(fileName)){
+                                    if (SaveAndLoadManager.save(fileName + ".sb", layers)){
+                                        Toast.makeText(getApplicationContext(), "Succesvol opgeslagen.",
+                                                Toast.LENGTH_LONG).show();
+                                    }else{
+                                        Toast.makeText(getApplicationContext(), "Er ging iets fout tijdens het opslaan.",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                }else{
+                                    Toast.makeText(getApplicationContext(), "Alleen letters zijn toegestaan.",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+
+                        alert2.show();
                         return true;
                     case R.id.menu_nav_load_image:
                         startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), RESULT_LOAD_IMAGE);
@@ -295,6 +331,18 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
     public List<Layerable> getLayers() {
         return layers;
+    }
+
+    public boolean isAlpha(String name) {
+        char[] chars = name.toCharArray();
+
+        for (char c : chars) {
+            if(!Character.isLetter(c)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }
