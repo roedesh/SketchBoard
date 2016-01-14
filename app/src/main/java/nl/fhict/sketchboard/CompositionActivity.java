@@ -127,12 +127,13 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         int chosenBoard = getIntent().getIntExtra("NewBoard", 1);
         if(chosenBoard == 1){
             layers.add(new ImageLayer(BitmapFactory.decodeResource(getResources(),R.drawable.skatetemplate), new PointF(0,0)));
+
         }else if(chosenBoard == 2){
             layers.add(new ImageLayer(BitmapFactory.decodeResource(getResources(),R.drawable.skatetemplate2), new PointF(0,0)));
         }else{
             layers.add(new ImageLayer(BitmapFactory.decodeResource(getResources(),R.drawable.skatetemplate3), new PointF(0,0)));
         }
-//        layers.add(new LineLayer());
+        this.drawLayers();
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
