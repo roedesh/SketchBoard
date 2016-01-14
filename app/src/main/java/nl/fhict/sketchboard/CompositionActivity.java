@@ -74,17 +74,6 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         setContentView(R.layout.activity_composition);
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_linear_layout);
 
-        if (getIntent().hasExtra("File")) {
-           RecentWrapper rw = (RecentWrapper) MainActivity.recentDesign;
-            boardtype = MainActivity.boardtype;
-            if (rw != null) {
-                this.layers = rw.getLayers();
-                // update & draw
-            }
-        } else if (getIntent().hasExtra("NewBoard")) {
-            ////Hier lad je nieuwe board in.
-        }
-
         // Creates a new drawing view and adds it to the main linear layout.
         drawingView = new DrawingView(getApplicationContext());
         drawingView.setOnTouchListener(new View.OnTouchListener() {
@@ -119,7 +108,6 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         if (getIntent().hasExtra("File")) {
             RecentWrapper rw = MainActivity.recentDesign;
             this.boardtype = MainActivity.boardtype;
-            System.out.println("hij komt hier wel aan");
             //RecentWrapper rw = (RecentWrapper) getIntent().getSerializableExtra("File");
 
             if (rw != null){
