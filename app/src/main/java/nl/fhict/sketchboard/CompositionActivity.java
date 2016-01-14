@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -432,6 +433,17 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                     case R.id.menu_nav_preview:
                         Toast.makeText(getApplicationContext(), "Preview",
                                 Toast.LENGTH_LONG).show();
+                        Dialog previewDialog = new Dialog(CompositionActivity.this);
+                        LayoutInflater previewinflater = (LayoutInflater) CompositionActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                        View previewlayout = previewinflater.inflate(R.layout.dialog_preview, (ViewGroup) findViewById(R.id.your_dialog_root_element));
+                        previewDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        previewDialog.setContentView(previewlayout);
+
+                        final ImageView previewimage = (ImageView) previewlayout.findViewById(R.id.previewdialog_image);
+                        previewimage.setImageBitmap(drawingView.getCanvasBitmap());
+                        previewDialog.show();
+
+
                         return true;
                     default:
                         return true;
