@@ -1,8 +1,6 @@
 package nl.fhict.sketchboard;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -21,7 +19,8 @@ import nl.fhict.sketchboard.utils.SaveAndLoadManager;
 public class MainActivity extends AppCompatActivity {
     private boolean mFabIsInCrossState = false;
 
-
+    // Te groot om mee te geven via Intent dus dan maar zo.
+    public static RecentWrapper recentDesign;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,40 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         final AppBarLayout appBarLayout = (AppBarLayout)findViewById(R.id.main_appbar_layout);
 
-        final RecyclerView recyclerView = (RecyclerView)findViewById(R.id.main_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ArrayList<BitmapWrapper> recents = new ArrayList<>();
-        List<NameObject> objects = SaveAndLoadManager.loadAll(10);
-        for(NameObject e : objects)
-        {
-            if(e.getObject() instanceof RecentWrapper)
-            {
-                RecentWrapper wrapper = (RecentWrapper) e.getObject();
-
-                Matrix matrix = new Matrix();
-                matrix.postRotate(90);
-
-                Bitmap rotatedBitmap = Bitmap.createBitmap(wrapper.getRecentmap() , 0, 0, wrapper.getRecentmap() .getWidth(), wrapper.getRecentmap() .getHeight(), matrix, true);
-                recents.add(new BitmapWrapper(e.getName(), rotatedBitmap));
-            }
-        }
-
-        final TestRecyclerAdapter adapter = new TestRecyclerAdapter(recents);
-        recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new TestRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(String text) {
-                Object object = SaveAndLoadManager.load(text);
-                if (object != null) {
-                    Intent intent = new Intent(MainActivity.this, CompositionActivity.class);
-                    intent.putExtra("File", (RecentWrapper) object);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Openen mislukt.",
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+        loadRecent();
 
         final RecyclerView overlay = (RecyclerView)findViewById(R.id.main_overlay_recycler);
         overlay.setLayoutManager(new LinearLayoutManager(this));
@@ -99,6 +65,41 @@ public class MainActivity extends AppCompatActivity {
                     mFabIsInCrossState = false;
                     overlay.setVisibility(View.GONE);
                     fab.animate().rotation(0f);
+                    loadRecent();
+                }
+            }
+        });
+    }
+
+    private void loadRecent(){
+        ArrayList<BitmapWrapper> recents = new ArrayList<>();
+
+        List<NameObject> objects = SaveAndLoadManager.loadAll(10);
+        for(NameObject e : objects)
+        {
+            if(e.getObject() instanceof RecentWrapper)
+            {
+                recents.add(new BitmapWrapper(e.getName(), ((RecentWrapper) e.getObject()).getRecentmap()));
+            }
+        }
+
+        final RecyclerView recyclerView = (RecyclerView)findViewById(R.id.main_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        final TestRecyclerAdapter adapter = new TestRecyclerAdapter(recents, this);
+        recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(new TestRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(String text) {
+                Object object = SaveAndLoadManager.load(text);
+                if (object != null) {
+                    Intent intent = new Intent(MainActivity.this, CompositionActivity.class);
+                    recentDesign = (RecentWrapper) object;
+                    intent.putExtra("File", "Lulz"/*(RecentWrapper) object*/);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Openen mislukt.",
+                            Toast.LENGTH_LONG).show();
                 }
             }
         });

@@ -3,10 +3,12 @@ package nl.fhict.sketchboard;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Created by ruudschroen on 07-01-16.
  */
-public class StableString implements Parcelable {
+public class StableString implements Parcelable, Serializable {
     private static long nextId = 0;
     private final long stableId;
     private String value;

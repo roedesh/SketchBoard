@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">OCE UI Test</string>
+    <string name="app_name">SketchBoard</string>
     <string name="header_image">Header Image</string>
     <string name="action_change_color">Verander kleur</string>
     <string name="title_change_color">Kies een kleur</string>

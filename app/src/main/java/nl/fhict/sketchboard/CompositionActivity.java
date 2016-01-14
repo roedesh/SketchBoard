@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -30,6 +33,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -70,6 +74,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         setContentView(R.layout.activity_composition);
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_linear_layout);
 
+
         if (getIntent().hasExtra("File")) {
             RecentWrapper rw = (RecentWrapper) getIntent().getSerializableExtra("File");
             if (rw != null) {
@@ -95,7 +100,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                             Paint p = new Paint();
                             p.setColor(Color.BLACK);
                             p.setAntiAlias(true);
-                            p.setStrokeWidth(20);
+                            p.setStrokeWidth(drawingView.getStrokeWidth());
                             p.setStrokeCap(Paint.Cap.ROUND);
                             ((DrawingLayer) activeLayer).addPoint(new DrawingPoint(touchX, touchY, p));
                             break;
@@ -110,6 +115,51 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
             }
         });
         mainLayout.addView(drawingView);
+
+        if (getIntent().hasExtra("File")) {
+            RecentWrapper rw = MainActivity.recentDesign;
+            //RecentWrapper rw = (RecentWrapper) getIntent().getSerializableExtra("File");
+
+            if (rw != null){
+                this.layers = rw.getLayers();
+            }
+        } else if (getIntent().hasExtra("NewBoard")) {
+            Bitmap skateboard = null;
+            DisplayMetrics display = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(display);
+            int chosenBoard = getIntent().getIntExtra("NewBoard", 1);
+            if(chosenBoard == 0){
+                skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longboard2), display.heightPixels, display.widthPixels);
+            }else if(chosenBoard == 1){
+                skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longbord1), display.heightPixels, display.widthPixels);
+            }else if(chosenBoard == 2){
+                skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.skateboard1), display.heightPixels, display.widthPixels);
+            }
+            layers.add(new ImageLayer(skateboard, new PointF(0, 0)));
+        }
+
+        //draw layers nadat canvas gevuld is.
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(drawingView.getCanvas() == null){
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        drawLayers();
+                    }
+                });
+            }
+        }).start();
+
+
 
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -155,6 +205,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
             }
         });
+
 
         Bitmap skateboard = null;
         DisplayMetrics display = new DisplayMetrics();
@@ -282,6 +333,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                         };
                         yourDialogSeekBar.setOnSeekBarChangeListener(yourSeekBarListener);
 
+                        addLayer(new DrawingLayer());
                         return true;
                     case R.id.menu_nav_switch_eraser:
                         if (drawingView.isInEraserMode()) {
@@ -289,9 +341,6 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                         } else {
                             drawingView.setEraserMode(true);
                         }
-                        return true;
-                    case R.id.menu_nav_new_drawing_layer:
-                        addLayer(new DrawingLayer());
                         return true;
                     case R.id.menu_nav_save:
                         final Dialog saveDialog = new Dialog(CompositionActivity.this);
@@ -310,6 +359,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                             public void onClick(View v) {
                                 String fileName = saveEditText.getText().toString();
                                 if (isAlpha(fileName)) {
+
                                     if (SaveAndLoadManager.save(fileName + ".sb", new RecentWrapper(layers, drawingView.getCanvasBitmap()))) {
                                         Toast.makeText(getApplicationContext(), "Succesvol opgeslagen.",
                                                 Toast.LENGTH_LONG).show();
@@ -405,7 +455,8 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                         textAccept.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Paint p = drawingView.getDrawPaint();
+                                Paint p = new Paint();
+                                p.setColor(drawingView.getPaintColor());
                                 p.setTextSize(textDialogSeekbar.getProgress());
                                 p.setStrokeWidth(textDialogSeekbarWidth.getProgress());
                                 addLayer(new TextLayer(editText.getText().toString(), p));
@@ -421,6 +472,21 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                         });
 
                         textDialog.show();
+
+                        return true;
+                    case R.id.menu_nav_preview:
+                        Toast.makeText(getApplicationContext(), "Preview",
+                                Toast.LENGTH_LONG).show();
+                        Dialog previewDialog = new Dialog(CompositionActivity.this);
+                        LayoutInflater previewinflater = (LayoutInflater) CompositionActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                        View previewlayout = previewinflater.inflate(R.layout.dialog_preview, (ViewGroup) findViewById(R.id.your_dialog_root_element));
+                        previewDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        previewDialog.setContentView(previewlayout);
+
+                        final ImageView previewimage = (ImageView) previewlayout.findViewById(R.id.previewdialog_image);
+                        previewimage.setImageBitmap( maskpreview(drawingView.getCanvasBitmap()));
+                        previewDialog.show();
+
 
                         return true;
                     default:
@@ -443,7 +509,10 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
 
-            addLayer(new ImageLayer(BitmapFactory.decodeFile(picturePath), new PointF(5, 5)));
+            Bitmap map = BitmapFactory.decodeFile(picturePath);
+            map = getResizedBitmap(map, map.getHeight()/5, map.getWidth()/5);
+
+            addLayer(new ImageLayer(map, new PointF(5, 5)));
         }
     }
 
@@ -505,8 +574,40 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         return true;
     }
 
-    public void setActiveLayer(int pos){
+
+    public void setActiveLayer(int pos) {
         activeLayer = layers.get(pos);
         Log.d("ACTIVELAYER", String.valueOf(pos));
+    }
+
+    public Bitmap maskpreview(Bitmap s)
+    {
+        Bitmap original = s;
+        DisplayMetrics display = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(display);
+        Bitmap mask = BitmapFactory.decodeResource(getResources(), R.drawable.longbord1);
+        int chosenBoard = getIntent().getIntExtra("NewBoard", 1);
+        if(chosenBoard == 0){
+            mask = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.longboard2), display.heightPixels, display.widthPixels);
+        }else if(chosenBoard == 1){
+            mask = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.longbord1), display.heightPixels, display.widthPixels);
+        }else if(chosenBoard == 2){
+            mask = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.skateboard1), display.heightPixels, display.widthPixels);
+        }
+
+        //You can change original image here and draw anything you want to be masked on it.
+
+        Bitmap result = Bitmap.createBitmap(mask.getWidth(), mask.getHeight(), Bitmap.Config.ARGB_8888);
+
+
+        Canvas tempCanvas = new Canvas(result);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+        tempCanvas.drawBitmap(original, 0, 0, null);
+        tempCanvas.drawBitmap(mask, 0, 0, paint);
+        paint.setXfermode(null);
+
+        return result;
+
     }
 }
