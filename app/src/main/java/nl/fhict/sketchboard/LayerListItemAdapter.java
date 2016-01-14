@@ -48,7 +48,7 @@ public class LayerListItemAdapter
 
     private List<Layerable> layerableList;
     private static OnItemClickListener mOnItemClickListener;
-    private Fragment parentFragment;
+    private static Fragment parentFragment;
 
     public static class MyViewHolder extends AbstractDraggableItemViewHolder implements View.OnClickListener {
         public FrameLayout container;
@@ -65,22 +65,14 @@ public class LayerListItemAdapter
 
         @Override
         public void onClick(View v) {
-            if (mOnItemClickListener != null) {
-                mOnItemClickListener.onItemClick(getAdapterPosition());
-            }
+            Log.d("ACTIVELAYER", getAdapterPosition()+"");
+            ((CompositionActivity)parentFragment.getActivity()).setActiveLayer(getAdapterPosition());
         }
     }
 
     public LayerListItemAdapter(List<Layerable> layerableList, Fragment fragment) {
         this.layerableList = layerableList;
         this.parentFragment = fragment;
-
-        mOnItemClickListener = new OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                ((CompositionActivity)parentFragment.getActivity()).setActiveLayer(position);
-            }
-        };
 
         // DraggableItemAdapter requires stable ID, and also
         // have to implement the getItemId() method appropriately.
