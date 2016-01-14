@@ -69,23 +69,12 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         setContentView(R.layout.activity_composition);
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_linear_layout);
 
-        if (getIntent().hasExtra("File")) {
-            RecentWrapper rw = MainActivity.recentDesign;
-            //RecentWrapper rw = (RecentWrapper) getIntent().getSerializableExtra("File");
-            if (rw != null){
-                this.layers = rw.getLayers();
-                // update & draw
-            }
-        } else if (getIntent().hasExtra("NewBoard")) {
-            ////Hier lad je nieuwe board in.
-        }
-
         // Creates a new drawing view and adds it to the main linear layout.
         drawingView = new DrawingView(getApplicationContext());
         drawingView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (activeLayer != null && activeLayer instanceof DrawingLayer){
+                if (activeLayer != null && activeLayer instanceof DrawingLayer) {
                     float touchX = event.getX();
                     float touchY = event.getY();
                     switch (event.getAction()) {
@@ -110,6 +99,80 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
             }
         });
         mainLayout.addView(drawingView);
+
+        if (getIntent().hasExtra("File")) {
+            RecentWrapper rw = MainActivity.recentDesign;
+            //RecentWrapper rw = (RecentWrapper) getIntent().getSerializableExtra("File");
+
+            if (rw != null){
+                this.layers = rw.getLayers();
+            }
+        } else if (getIntent().hasExtra("NewBoard")) {
+            Bitmap skateboard = null;
+            DisplayMetrics display = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(display);
+            int chosenBoard = getIntent().getIntExtra("NewBoard", 1);
+            if(chosenBoard == 0){
+                skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longboard2), display.heightPixels, display.widthPixels);
+            }else if(chosenBoard == 1){
+                skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longbord1), display.heightPixels, display.widthPixels);
+            }else if(chosenBoard == 2){
+                skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.skateboard1), display.heightPixels, display.widthPixels);
+            }
+            layers.add(new ImageLayer(skateboard, new PointF(0, 0)));
+        }
+
+        //draw layers nadat canvas gevuld is.
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(drawingView.getCanvas() == null){
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        drawLayers();
+                    }
+                });
+            }
+        }).start();
+
+//        // Creates a new drawing view and adds it to the main linear layout.
+//        drawingView = new DrawingView(getApplicationContext());
+//        drawingView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (activeLayer != null && activeLayer instanceof DrawingLayer){
+//                    float touchX = event.getX();
+//                    float touchY = event.getY();
+//                    switch (event.getAction()) {
+//                        case MotionEvent.ACTION_DOWN:
+//                            break;
+//                        case MotionEvent.ACTION_MOVE:
+//                            Paint p = new Paint();
+//                            p.setColor(Color.BLACK);
+//                            p.setAntiAlias(true);
+//                            p.setStrokeWidth(20);
+//                            p.setStrokeCap(Paint.Cap.ROUND);
+//                            ((DrawingLayer) activeLayer).addPoint(new DrawingPoint(touchX, touchY, p));
+//                            break;
+//                        case MotionEvent.ACTION_UP:
+//                            break;
+//                        default:
+//                            return false;
+//                    }
+//                    drawLayers();
+//                }
+//                return true;
+//            }
+//        });
+//        mainLayout.addView(drawingView);
 
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -156,38 +219,38 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
             }
         });
 
-        Bitmap skateboard = null;
-        DisplayMetrics display = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(display);
-        int chosenBoard = getIntent().getIntExtra("NewBoard", 1);
-        if(chosenBoard == 0){
-            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longboard2), display.heightPixels, display.widthPixels);
-        }else if(chosenBoard == 1){
-            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longbord1), display.heightPixels, display.widthPixels);
-        }else{
-            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.skateboard1), display.heightPixels, display.widthPixels);
-        }
-        layers.add(new ImageLayer(skateboard, new PointF(0, 0)));
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(drawingView.getCanvas() == null){
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        return;
-                    }
-                }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        drawLayers();
-                    }
-                });
-            }
-        }).start();
+//        Bitmap skateboard = null;
+//        DisplayMetrics display = new DisplayMetrics();
+//        getWindowManager().getDefaultDisplay().getMetrics(display);
+//        int chosenBoard = getIntent().getIntExtra("NewBoard", 1);
+//        if(chosenBoard == 0){
+//            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longboard2), display.heightPixels, display.widthPixels);
+//        }else if(chosenBoard == 1){
+//            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longbord1), display.heightPixels, display.widthPixels);
+//        }else if(chosenBoard == 2){
+//            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.skateboard1), display.heightPixels, display.widthPixels);
+//        }
+//        layers.add(new ImageLayer(skateboard, new PointF(0, 0)));
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while(drawingView.getCanvas() == null){
+//                    try {
+//                        Thread.sleep(100);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                        return;
+//                    }
+//                }
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        drawLayers();
+//                    }
+//                });
+//            }
+//        }).start();
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
