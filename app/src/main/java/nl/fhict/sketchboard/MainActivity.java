@@ -2,6 +2,7 @@ package nl.fhict.sketchboard;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -35,11 +36,18 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<Bitmap> recents = new ArrayList<>();
         List<Object> objects = SaveAndLoadManager.loadAll(10);
+        System.out.println(objects.size() + "saveandoad");
         for(Object e : objects)
         {
+            System.out.println(e.getClass().getName());
             if(e instanceof RecentWrapper)
             {
-                recents.add(((RecentWrapper) e).getRecentmap());
+                Matrix matrix = new Matrix();
+
+                matrix.postRotate(90);
+
+                Bitmap rotatedBitmap = Bitmap.createBitmap(((RecentWrapper) e).getRecentmap() , 0, 0, ((RecentWrapper) e).getRecentmap() .getWidth(), ((RecentWrapper) e).getRecentmap() .getHeight(), matrix, true);
+                recents.add(rotatedBitmap);
 
             }
         }
@@ -73,8 +81,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(String text) {
                 Intent intent = new Intent(MainActivity.this, CompositionActivity.class);
-                intent.putExtra("NewBoard", templates.get(Integer.valueOf(text)));
-                System.out.println(text);
+                int newboard = Integer.valueOf(text);
+                intent.putExtra("NewBoard", newboard);
+
                 startActivity(intent);
             }
         });

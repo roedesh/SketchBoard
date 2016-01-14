@@ -118,6 +118,7 @@ public class SaveAndLoadManager {
         List<Object> tempObjects = new ArrayList<>();
         File tempDir = new File(pathPrefix);
         if (tempDir.exists()){
+
             File[] tempFiles = tempDir.listFiles();
 
             Arrays.sort(tempFiles, new Comparator<File>() {
@@ -134,9 +135,11 @@ public class SaveAndLoadManager {
                 Object o = load(tempFiles[i].getName());
                 if (o != null){
                     tempObjects.add(o);
+                    System.out.println(o.getClass().getName());
                 }
             }
         }
+        System.out.println(tempObjects.size() + "objects");
         return tempObjects;
     }
 }
