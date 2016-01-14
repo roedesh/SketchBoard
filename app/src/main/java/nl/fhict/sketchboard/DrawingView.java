@@ -110,6 +110,14 @@ public class DrawingView extends View {
         return this.strokeWidth;
     }
 
+    public float getTextSize(){
+        return this.drawPaint.getTextSize();
+    }
+
+    public void setTextSize(float size){
+        this.drawPaint.setTextSize(size);
+    }
+
     public void setPaintColor(int paintColor) {
         this.paintColor = paintColor;
         this.drawPaint.setColor(paintColor);
@@ -146,6 +154,8 @@ public class DrawingView extends View {
             eraserMode = false;
         }
     }
+
+
 
     public Canvas getCanvas(){
         return this.drawCanvas;

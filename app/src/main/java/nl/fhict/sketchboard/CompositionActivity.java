@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -261,25 +263,89 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                         startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), RESULT_LOAD_IMAGE);
                         return true;
                     case R.id.menu_nav_insert_text:
-                        AlertDialog.Builder alert = new AlertDialog.Builder(CompositionActivity.this);
+                        final Dialog textDialog = new Dialog(CompositionActivity.this);
+                        final LayoutInflater textInflator = (LayoutInflater) CompositionActivity.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                        final View textLayout = textInflator.inflate(R.layout.dialog_text, (ViewGroup) findViewById(R.id.your_dialog_root_element));
+                        textDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        textDialog.setContentView(textLayout);
 
-                        alert.setTitle("Tekst");
-                        alert.setMessage("Voeg hier je tekst toe");
+                        final Button textAccept = (Button) textLayout.findViewById(R.id.textChoiceAccept);
+                        final Button textDecline = (Button) textLayout.findViewById(R.id.textChoiceDecline);
+                        final EditText editText = (EditText) textLayout.findViewById(R.id.enteredText);
 
-                        // Set an EditText view to get user input
-                        final EditText input = new EditText(CompositionActivity.this);
-                        alert.setView(input);
 
-                        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                int size = drawingView.getStrokeWidth();
-                                drawingView.setStrokeWidth(1);
-                                addLayer(new TextLayer(input.getText().toString(), drawingView.getDrawPaint()));
-                                drawingView.setStrokeWidth(size);
+                        final TextView textDialogTextView = (TextView) textLayout.findViewById(R.id.textSizeTextView);
+                        final SeekBar textDialogSeekbar = (SeekBar) textLayout.findViewById(R.id.textSizeSeekbar);
+                        drawingView.setTextSize(80);//set default
+                        textDialogSeekbar.setMax(290);
+                        textDialogSeekbar.setProgress((int) (drawingView.getTextSize() - 10));
+                        textDialogTextView.setText("Text size : " + drawingView.getTextSize());
+                        SeekBar.OnSeekBarChangeListener SeekBarListener = new SeekBar.OnSeekBarChangeListener() {
+                            @Override
+                            public void onStopTrackingTouch(SeekBar seekBar) {
+                                drawingView.setTextSize(textDialogSeekbar.getProgress() + 10);
+                            }
+
+                            @Override
+                            public void onStartTrackingTouch(SeekBar seekBar) {
+                            }
+
+                            @Override
+                            public void onProgressChanged(SeekBar seekBark, int progress, boolean fromUser) {
+                                textDialogSeekbar.setProgress(progress);
+                                textDialogTextView.setText("Text size : " + (10 + progress));
+                            }
+                        };
+                        textDialogSeekbar.setOnSeekBarChangeListener(SeekBarListener);
+
+
+
+                        final TextView textDialogTextViewWidth = (TextView) textLayout.findViewById(R.id.widthSizeTextView);
+                        final SeekBar textDialogSeekbarWidth = (SeekBar) textLayout.findViewById(R.id.widthSizeSeekbar);
+                        textDialogSeekbarWidth.setMax(39);
+                        drawingView.setStrokeWidth(10);
+                        textDialogSeekbarWidth.setProgress(drawingView.getStrokeWidth() - 1);
+                        textDialogTextViewWidth.setText("Stroke width : " + drawingView.getStrokeWidth());
+
+                        SeekBar.OnSeekBarChangeListener SeekBarListenerWidth = new SeekBar.OnSeekBarChangeListener() {
+                            @Override
+                            public void onStopTrackingTouch(SeekBar seekBar) {
+                                drawingView.setStrokeWidth(textDialogSeekbarWidth.getProgress() + 1);
+                            }
+
+                            @Override
+                            public void onStartTrackingTouch(SeekBar seekBar) {
+                            }
+
+                            @Override
+                            public void onProgressChanged(SeekBar seekBark, int progress, boolean fromUser) {
+                                textDialogSeekbarWidth.setProgress(progress);
+                                textDialogTextViewWidth.setText("Stroke width : " + (1 + progress));
+                            }
+                        };
+                        textDialogSeekbarWidth.setOnSeekBarChangeListener(SeekBarListenerWidth);
+
+
+                        textAccept.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Paint p = drawingView.getDrawPaint();
+                                p.setTextSize(textDialogSeekbar.getProgress());
+                                p.setStrokeWidth(textDialogSeekbarWidth.getProgress());
+                                addLayer(new TextLayer(editText.getText().toString(), p));
+                                textDialog.cancel();
                             }
                         });
 
-                        alert.show();
+                        textDecline.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                textDialog.cancel();
+                            }
+                        });
+
+                        textDialog.show();
+
                         return true;
                     default:
                         return true;

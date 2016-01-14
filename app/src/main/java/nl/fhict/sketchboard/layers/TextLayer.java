@@ -31,7 +31,7 @@ public class TextLayer implements Layerable {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawText(this.text, 10, 10, this.paint);
+        canvas.drawText(this.text, 500, 500, this.paint);
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
