@@ -21,4 +21,7 @@
     <item android:title="@string/action_text"
         android:icon="@drawable/ic_format_text_grey600_24dp"
         android:id="@+id/menu_nav_insert_text"/>
+    <item android:title="Preview"
+        android:icon="@drawable/ic_add"
+        android:id="@+id/menu_nav_preview"/>
 </menu>

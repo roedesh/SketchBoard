@@ -159,15 +159,15 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         DisplayMetrics display = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(display);
         int chosenBoard = getIntent().getIntExtra("NewBoard", 1);
-        if(chosenBoard == 1){
-            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.skateboard1), display.heightPixels, display.widthPixels);
-        }else if(chosenBoard == 2){
+        if(chosenBoard == 0){
+            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longboard2), display.heightPixels, display.widthPixels);
+        }else if(chosenBoard == 1){
             skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longbord1), display.heightPixels, display.widthPixels);
         }else{
-            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longboard2), display.heightPixels, display.widthPixels);
+            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.skateboard1), display.heightPixels, display.widthPixels);
         }
         layers.add(new ImageLayer(skateboard, new PointF(0, 0)));
-        this.drawLayers();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -179,7 +179,12 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                         return;
                     }
                 }
-                drawLayers();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        drawLayers();
+                    }
+                });
             }
         }).start();
 
@@ -420,6 +425,10 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
                         textDialog.show();
 
+                        return true;
+                    case R.id.menu_nav_preview:
+                        Toast.makeText(getApplicationContext(), "Preview",
+                                Toast.LENGTH_LONG).show();
                         return true;
                     default:
                         return true;
