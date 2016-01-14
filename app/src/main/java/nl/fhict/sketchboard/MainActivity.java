@@ -9,6 +9,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     private boolean mFabIsInCrossState = false;
 
@@ -32,7 +34,11 @@ public class MainActivity extends AppCompatActivity {
 
         final RecyclerView overlay = (RecyclerView)findViewById(R.id.main_overlay_recycler);
         overlay.setLayoutManager(new LinearLayoutManager(this));
-        overlay.setAdapter(new TestRecyclerAdapter("NEW DESIGN"));
+        ArrayList<Integer> templates = new ArrayList<>();
+        templates.add(R.drawable.skatetemplate);
+        templates.add(R.drawable.skatetemplate2);
+        templates.add(R.drawable.skatetemplate3);
+        overlay.setAdapter(new NewBoardRecyclerAdapter(templates));
 
         final FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.main_fab);
         fab.setOnClickListener(new View.OnClickListener() {
