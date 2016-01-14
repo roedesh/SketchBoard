@@ -2,6 +2,8 @@ package nl.fhict.sketchboard;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -15,12 +17,17 @@ import java.util.List;
 
 import nl.fhict.sketchboard.layers.LayerWrapper;
 import nl.fhict.sketchboard.layers.Layerable;
+import nl.fhict.sketchboard.layers.LineLayer;
+import nl.fhict.sketchboard.utils.RecentWrapper;
 import nl.fhict.sketchboard.utils.SaveAndLoadManager;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private boolean mFabIsInCrossState = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +41,15 @@ public class MainActivity extends AppCompatActivity {
         final RecyclerView recyclerView = (RecyclerView)findViewById(R.id.main_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<Bitmap> recents = new ArrayList<>();
+        List<Object> objects = SaveAndLoadManager.loadAll();
+        for(Object e : objects)
+        {
+            if(e instanceof RecentWrapper)
+            {
+                recents.add(((RecentWrapper) e).getRecentmap());
 
+            }
+        }
 
         final TestRecyclerAdapter adapter = new TestRecyclerAdapter(recents);
         recyclerView.setAdapter(adapter);

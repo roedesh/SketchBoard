@@ -27,7 +27,7 @@ public class TestRecyclerAdapter extends RecyclerView.Adapter<TestRecyclerAdapte
 
     @Override
     public void onBindViewHolder(TestRecyclerAdapter.ViewHolder holder, int position) {
-        holder.image.setBackgroundResource(R.drawable.ic_settings);
+        holder.image.setImageBitmap(recents.get(position));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

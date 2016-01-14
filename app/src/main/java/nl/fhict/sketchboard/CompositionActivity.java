@@ -45,6 +45,7 @@ import nl.fhict.sketchboard.layers.LayerWrapper;
 import nl.fhict.sketchboard.layers.Layerable;
 import nl.fhict.sketchboard.layers.LineLayer;
 import nl.fhict.sketchboard.layers.TextLayer;
+import nl.fhict.sketchboard.utils.RecentWrapper;
 import nl.fhict.sketchboard.utils.SaveAndLoadManager;
 
 public class CompositionActivity extends AppCompatActivity implements ColorPicker.OnColorChangedListener {
@@ -255,9 +256,11 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                             public void onClick(View v) {
                                 String fileName = saveEditText.getText().toString();
                                 if (isAlpha(fileName)) {
-                                    if (SaveAndLoadManager.save(fileName + ".sb", layers)) {
+                                    if (SaveAndLoadManager.save(fileName + ".sb", new RecentWrapper(layers, drawingView.getCanvasBitmap()))) {
                                         Toast.makeText(getApplicationContext(), "Succesvol opgeslagen.",
                                                 Toast.LENGTH_LONG).show();
+
+
                                     } else {
                                         Toast.makeText(getApplicationContext(), "Er ging iets fout tijdens het opslaan.",
                                                 Toast.LENGTH_LONG).show();
