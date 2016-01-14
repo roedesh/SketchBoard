@@ -16,6 +16,7 @@
 
 package nl.fhict.sketchboard;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -46,8 +47,10 @@ public class LayerListItemAdapter
     }
 
     private List<Layerable> layerableList;
+    private static OnItemClickListener mOnItemClickListener;
+    private Fragment parentFragment;
 
-    public static class MyViewHolder extends AbstractDraggableItemViewHolder {
+    public static class MyViewHolder extends AbstractDraggableItemViewHolder implements View.OnClickListener {
         public FrameLayout container;
         public View dragHandle;
         public TextView textView;
@@ -57,11 +60,27 @@ public class LayerListItemAdapter
             container = (FrameLayout) v.findViewById(R.id.container);
             dragHandle = v.findViewById(R.id.drag_handle);
             textView = (TextView) v.findViewById(R.id.text1);
+            v.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onItemClick(getAdapterPosition());
+            }
         }
     }
 
-    public LayerListItemAdapter(List<Layerable> layerableList) {
+    public LayerListItemAdapter(List<Layerable> layerableList, Fragment fragment) {
         this.layerableList = layerableList;
+        this.parentFragment = fragment;
+
+        mOnItemClickListener = new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                ((CompositionActivity)parentFragment.getActivity()).setActiveLayer(position);
+            }
+        };
 
         // DraggableItemAdapter requires stable ID, and also
         // have to implement the getItemId() method appropriately.
@@ -144,5 +163,17 @@ public class LayerListItemAdapter
     public ItemDraggableRange onGetItemDraggableRange(MyViewHolder holder, int position) {
         // no drag-sortable range specified
         return null;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mOnItemClickListener = listener;
+    }
+
+    public boolean isOnItemClickListenerNull() {
+        return mOnItemClickListener == null;
     }
 }

@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +30,11 @@ import nl.fhict.sketchboard.layers.Layerable;
 public class RecyclerListViewFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView.Adapter mAdapter;
+    private LayerListItemAdapter mAdapter;
     private RecyclerView.Adapter mWrappedAdapter;
     private RecyclerViewDragDropManager mRecyclerViewDragDropManager;
+
+    private LayerListItemAdapter.OnItemClickListener mFutureOnItemClickListener;
 
     public RecyclerListViewFragment() {
         super();
@@ -54,10 +57,19 @@ public class RecyclerListViewFragment extends Fragment {
         mRecyclerViewDragDropManager = new RecyclerViewDragDropManager();
 
         //adapter
-        final LayerListItemAdapter myItemAdapter = new LayerListItemAdapter(getDataProvider());
+        final LayerListItemAdapter myItemAdapter = new LayerListItemAdapter(getDataProvider(), this);
         mAdapter = myItemAdapter;
+        if (mAdapter.isOnItemClickListenerNull()) {
+            mAdapter.setOnItemClickListener(new LayerListItemAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(int position) {
+                    ((CompositionActivity)getActivity()).setActiveLayer(position);
+                }
+            });
+        }
 
-        mWrappedAdapter = mRecyclerViewDragDropManager.createWrappedAdapter(myItemAdapter);      // wrap for dragging
+        mWrappedAdapter = mRecyclerViewDragDropManager.createWrappedAdapter(mAdapter);      // wrap for dragging
+
 
         final GeneralItemAnimator animator = new RefactoredDefaultItemAnimator();
 
@@ -111,4 +123,5 @@ public class RecyclerListViewFragment extends Fragment {
     public List<Layerable> getDataProvider() {
         return ((CompositionActivity) getActivity()).getLayers();
     }
+
 }

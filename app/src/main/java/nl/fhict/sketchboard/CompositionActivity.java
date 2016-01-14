@@ -19,6 +19,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -71,7 +72,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
         if (getIntent().hasExtra("File")) {
             RecentWrapper rw = (RecentWrapper) getIntent().getSerializableExtra("File");
-            if (rw != null){
+            if (rw != null) {
                 this.layers = rw.getLayers();
                 // update & draw
             }
@@ -84,7 +85,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         drawingView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (activeLayer != null && activeLayer instanceof DrawingLayer){
+                if (activeLayer != null && activeLayer instanceof DrawingLayer) {
                     float touchX = event.getX();
                     float touchY = event.getY();
                     switch (event.getAction()) {
@@ -159,19 +160,19 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         DisplayMetrics display = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(display);
         int chosenBoard = getIntent().getIntExtra("NewBoard", 1);
-        if(chosenBoard == 1){
-            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.skateboard1), display.heightPixels, display.widthPixels);
-        }else if(chosenBoard == 2){
-            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longbord1), display.heightPixels, display.widthPixels);
-        }else{
-            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.longboard2), display.heightPixels, display.widthPixels);
+        if (chosenBoard == 1) {
+            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.skateboard1), display.heightPixels, display.widthPixels);
+        } else if (chosenBoard == 2) {
+            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.longbord1), display.heightPixels, display.widthPixels);
+        } else {
+            skateboard = getResizedBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.longboard2), display.heightPixels, display.widthPixels);
         }
         layers.add(new ImageLayer(skateboard, new PointF(0, 0)));
         this.drawLayers();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while(drawingView.getCanvas() == null){
+                while (drawingView.getCanvas() == null) {
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
@@ -183,11 +184,12 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
             }
         }).start();
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new nl.fhict.sketchboard.RecyclerListViewFragment(), FRAGMENT_LIST_VIEW)
-                    .commit();
-        }
+        nl.fhict.sketchboard.RecyclerListViewFragment fragment = new nl.fhict.sketchboard.RecyclerListViewFragment();
+
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.container, fragment, FRAGMENT_LIST_VIEW)
+                .commit();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.main_nav);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -464,7 +466,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
     }
 
     public void drawLayers() {
-        if(drawingView.getCanvas() != null) {
+        if (drawingView.getCanvas() != null) {
             for (Layerable layer : this.layers) {
                 layer.draw(this.drawingView.getCanvas());
             }
@@ -475,14 +477,13 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
     public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
         int actionBarHeight = 168;//default actionbar height bij mij
         TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-        {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
         int width = bm.getWidth();
         int height = bm.getHeight();
         float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight - (actionBarHeight/2)) / height;
+        float scaleHeight = ((float) newHeight - (actionBarHeight / 2)) / height;
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
         Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
@@ -497,10 +498,15 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         char[] chars = name.toCharArray();
 
         for (char c : chars) {
-            if(!Character.isLetter(c)) {
+            if (!Character.isLetter(c)) {
                 return false;
             }
         }
         return true;
+    }
+
+    public void setActiveLayer(int pos){
+        activeLayer = layers.get(pos);
+        Log.d("ACTIVELAYER", String.valueOf(pos));
     }
 }
