@@ -339,8 +339,6 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                         };
                         textDialogSeekbar.setOnSeekBarChangeListener(SeekBarListener);
 
-
-
                         final TextView textDialogTextViewWidth = (TextView) textLayout.findViewById(R.id.widthSizeTextView);
                         final SeekBar textDialogSeekbarWidth = (SeekBar) textLayout.findViewById(R.id.widthSizeSeekbar);
                         textDialogSeekbarWidth.setMax(39);
@@ -393,8 +391,6 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                 }
             }
         });
-
-
     }
 
 
@@ -468,8 +464,6 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                 return false;
             }
         }
-
         return true;
     }
-
 }
