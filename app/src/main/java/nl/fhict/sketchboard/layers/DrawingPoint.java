@@ -33,6 +33,7 @@ public class DrawingPoint extends PointF implements Serializable {
         out.writeObject(paint.getColor());
         out.writeObject(paint.getTextSize());
         out.writeObject(paint.getStrokeWidth());
+        out.writeObject(paint.getStrokeCap());
         // Missing shit
     }
 
@@ -44,12 +45,14 @@ public class DrawingPoint extends PointF implements Serializable {
         int color = (int) in.readObject();
         float size = (float) in.readObject();
         float width = (float) in.readObject();
+        Paint.Cap cap = (Paint.Cap) in.readObject();
 
         this.paint = new Paint();
         this.paint.setAlpha(alpha);
         this.paint.setColor(color);
         this.paint.setTextSize(size);
         this.paint.setStrokeWidth(width);
+        this.paint.setStrokeCap(cap);
         // Missing shit
     }
 
