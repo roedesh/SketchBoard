@@ -1,21 +1,20 @@
 package nl.fhict.sketchboard;
 
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class TestRecyclerAdapter extends RecyclerView.Adapter<TestRecyclerAdapter.ViewHolder> {
-    private ArrayList<Bitmap> recents;
+
+    private ArrayList<BitmapWrapper> recents;
 
     private OnItemClickListener mOnItemClickListener;
 
-    public TestRecyclerAdapter(ArrayList<Bitmap> bitmaps) {
+    public TestRecyclerAdapter(ArrayList<BitmapWrapper> bitmaps) {
         recents = bitmaps;
     }
 
@@ -27,7 +26,7 @@ public class TestRecyclerAdapter extends RecyclerView.Adapter<TestRecyclerAdapte
 
     @Override
     public void onBindViewHolder(TestRecyclerAdapter.ViewHolder holder, int position) {
-        holder.image.setImageBitmap(recents.get(position));
+        holder.image.setImageBitmap(recents.get(position).getBitmap());
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -42,7 +41,7 @@ public class TestRecyclerAdapter extends RecyclerView.Adapter<TestRecyclerAdapte
         @Override
         public void onClick(View v) {
             if (mOnItemClickListener != null) {
-                mOnItemClickListener.onItemClick(getAdapterPosition() + "");
+                mOnItemClickListener.onItemClick(recents.get(getAdapterPosition()).getName());
             }
         }
     }

@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import nl.fhict.sketchboard.NameObject;
+
 /**
  * Created by arjan on 8-1-2016.
  */
@@ -114,8 +116,8 @@ public class SaveAndLoadManager {
         return null;
     }
 
-    public static List<Object> loadAll(int amount){
-        List<Object> tempObjects = new ArrayList<>();
+    public static List<NameObject> loadAll(int amount){
+        List<NameObject> tempObjects = new ArrayList<>();
         File tempDir = new File(pathPrefix);
         if (tempDir.exists()){
 
@@ -134,12 +136,10 @@ public class SaveAndLoadManager {
             for (int i = 0; i < amount; i++){
                 Object o = load(tempFiles[i].getName());
                 if (o != null){
-                    tempObjects.add(o);
-                    System.out.println(o.getClass().getName());
+                    tempObjects.add(new NameObject(tempFiles[i].getName(), o));
                 }
             }
         }
-        System.out.println(tempObjects.size() + "objects");
         return tempObjects;
     }
 }
