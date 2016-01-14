@@ -31,35 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         final AppBarLayout appBarLayout = (AppBarLayout)findViewById(R.id.main_appbar_layout);
 
-        final RecyclerView recyclerView = (RecyclerView)findViewById(R.id.main_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ArrayList<BitmapWrapper> recents = new ArrayList<>();
-        List<NameObject> objects = SaveAndLoadManager.loadAll(10);
-        for(NameObject e : objects)
-        {
-            if(e.getObject() instanceof RecentWrapper)
-            {
-                   recents.add(new BitmapWrapper(e.getName(), ((RecentWrapper) e.getObject()).getRecentmap()));
-            }
-        }
-
-        final TestRecyclerAdapter adapter = new TestRecyclerAdapter(recents, this);
-        recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new TestRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(String text) {
-                Object object = SaveAndLoadManager.load(text);
-                if (object != null) {
-                    Intent intent = new Intent(MainActivity.this, CompositionActivity.class);
-                    recentDesign = (RecentWrapper) object;
-                    intent.putExtra("File", "Lulz"/*(RecentWrapper) object*/);
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Openen mislukt.",
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+        loadRecent();
 
         final RecyclerView overlay = (RecyclerView)findViewById(R.id.main_overlay_recycler);
         overlay.setLayoutManager(new LinearLayoutManager(this));
@@ -93,6 +65,41 @@ public class MainActivity extends AppCompatActivity {
                     mFabIsInCrossState = false;
                     overlay.setVisibility(View.GONE);
                     fab.animate().rotation(0f);
+                    loadRecent();
+                }
+            }
+        });
+    }
+
+    private void loadRecent(){
+        ArrayList<BitmapWrapper> recents = new ArrayList<>();
+
+        List<NameObject> objects = SaveAndLoadManager.loadAll(10);
+        for(NameObject e : objects)
+        {
+            if(e.getObject() instanceof RecentWrapper)
+            {
+                recents.add(new BitmapWrapper(e.getName(), ((RecentWrapper) e.getObject()).getRecentmap()));
+            }
+        }
+
+        final RecyclerView recyclerView = (RecyclerView)findViewById(R.id.main_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        final TestRecyclerAdapter adapter = new TestRecyclerAdapter(recents, this);
+        recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(new TestRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(String text) {
+                Object object = SaveAndLoadManager.load(text);
+                if (object != null) {
+                    Intent intent = new Intent(MainActivity.this, CompositionActivity.class);
+                    recentDesign = (RecentWrapper) object;
+                    intent.putExtra("File", "Lulz"/*(RecentWrapper) object*/);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Openen mislukt.",
+                            Toast.LENGTH_LONG).show();
                 }
             }
         });
