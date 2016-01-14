@@ -40,17 +40,11 @@ public class MainActivity extends AppCompatActivity {
         {
             if(e.getObject() instanceof RecentWrapper)
             {
-                RecentWrapper wrapper = (RecentWrapper) e.getObject();
-
-                Matrix matrix = new Matrix();
-                matrix.postRotate(90);
-
-                Bitmap rotatedBitmap = Bitmap.createBitmap(wrapper.getRecentmap() , 0, 0, wrapper.getRecentmap() .getWidth(), wrapper.getRecentmap() .getHeight(), matrix, true);
-                recents.add(new BitmapWrapper(e.getName(), rotatedBitmap));
+                   recents.add(new BitmapWrapper(e.getName(), ((RecentWrapper) e.getObject()).getRecentmap()));
             }
         }
 
-        final TestRecyclerAdapter adapter = new TestRecyclerAdapter(recents);
+        final TestRecyclerAdapter adapter = new TestRecyclerAdapter(recents, this);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(new TestRecyclerAdapter.OnItemClickListener() {
             @Override

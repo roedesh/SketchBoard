@@ -1,9 +1,16 @@
 package nl.fhict.sketchboard;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -13,9 +20,11 @@ public class TestRecyclerAdapter extends RecyclerView.Adapter<TestRecyclerAdapte
     private ArrayList<BitmapWrapper> recents;
 
     private OnItemClickListener mOnItemClickListener;
+    private Context context;
 
-    public TestRecyclerAdapter(ArrayList<BitmapWrapper> bitmaps) {
-        recents = bitmaps;
+    public TestRecyclerAdapter(ArrayList<BitmapWrapper> bitmaps, Context context) {
+        this.recents = bitmaps;
+        this.context = context;
     }
 
     @Override
@@ -26,7 +35,22 @@ public class TestRecyclerAdapter extends RecyclerView.Adapter<TestRecyclerAdapte
 
     @Override
     public void onBindViewHolder(TestRecyclerAdapter.ViewHolder holder, int position) {
-        holder.image.setImageBitmap(recents.get(position).getBitmap());
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        Bitmap b = recents.get(position).getBitmap();
+        Bitmap rotatedBitmap = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), matrix, true);
+
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+
+        Bitmap resizedbitmap = getResizedBitmap(rotatedBitmap, height, width);
+
+        holder.image.setImageBitmap(resizedbitmap);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -57,5 +81,10 @@ public class TestRecyclerAdapter extends RecyclerView.Adapter<TestRecyclerAdapte
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         mOnItemClickListener = listener;
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
+        Bitmap b = Bitmap.createScaledBitmap(bm, newWidth, newHeight /4, true);
+        return b;
     }
 }
