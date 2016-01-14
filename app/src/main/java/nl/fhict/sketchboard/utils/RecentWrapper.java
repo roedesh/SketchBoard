@@ -2,7 +2,6 @@ package nl.fhict.sketchboard.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PointF;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,16 +17,16 @@ import nl.fhict.sketchboard.layers.Layerable;
  */
 public class RecentWrapper implements Serializable {
 
-    private List<Layerable> recents;
+    private List<Layerable> layers;
     private Bitmap recentmap;
 
-    public RecentWrapper(List<Layerable> recents, Bitmap recentmap) {
-        this.recents = recents;
+    public RecentWrapper(List<Layerable> layers, Bitmap recentmap) {
+        this.layers = layers;
         this.recentmap = recentmap;
     }
 
-    public List<Layerable> getRecents() {
-        return recents;
+    public List<Layerable> getLayers() {
+        return layers;
     }
 
     public Bitmap getRecentmap() {

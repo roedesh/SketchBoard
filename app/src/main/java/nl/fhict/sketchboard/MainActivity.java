@@ -2,8 +2,6 @@ package nl.fhict.sketchboard;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -13,16 +11,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import nl.fhict.sketchboard.layers.LayerWrapper;
-import nl.fhict.sketchboard.layers.Layerable;
-import nl.fhict.sketchboard.layers.LineLayer;
 import nl.fhict.sketchboard.utils.RecentWrapper;
 import nl.fhict.sketchboard.utils.SaveAndLoadManager;
-
-import java.util.ArrayList;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private boolean mFabIsInCrossState = false;
@@ -59,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 Object object = SaveAndLoadManager.load(text);
                 if (object != null) {
                     Intent intent = new Intent(MainActivity.this, CompositionActivity.class);
-                    intent.putExtra("File", new LayerWrapper((List<Layerable>) object));
+                    intent.putExtra("File", (RecentWrapper) object);
                     startActivity(intent);
                 } else {
                     Toast.makeText(getApplicationContext(), "Openen mislukt.",

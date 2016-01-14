@@ -15,8 +15,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import nl.fhict.sketchboard.Layer;
-
 /**
  * Created by arjan on 8-1-2016.
  */
@@ -124,7 +122,7 @@ public class SaveAndLoadManager {
 
             Arrays.sort(tempFiles, new Comparator<File>() {
                 public int compare(File f1, File f2) {
-                    return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+                    return -Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
                 }
             });
 

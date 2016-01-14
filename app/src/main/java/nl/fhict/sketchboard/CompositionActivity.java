@@ -1,14 +1,11 @@
 package nl.fhict.sketchboard;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -41,9 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.fhict.sketchboard.layers.ImageLayer;
-import nl.fhict.sketchboard.layers.LayerWrapper;
 import nl.fhict.sketchboard.layers.Layerable;
-import nl.fhict.sketchboard.layers.LineLayer;
 import nl.fhict.sketchboard.layers.TextLayer;
 import nl.fhict.sketchboard.utils.RecentWrapper;
 import nl.fhict.sketchboard.utils.SaveAndLoadManager;
@@ -66,9 +61,9 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_linear_layout);
 
         if (getIntent().hasExtra("File")) {
-            LayerWrapper lw = (LayerWrapper) getIntent().getSerializableExtra("File");
-            if (lw != null){
-                this.layers = lw.getLayers();
+            RecentWrapper rw = (RecentWrapper) getIntent().getSerializableExtra("File");
+            if (rw != null){
+                this.layers = rw.getLayers();
                 // update & draw
             }
         } else if (getIntent().hasExtra("NewBoard")) {
