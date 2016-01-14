@@ -145,6 +145,7 @@ public class LayerListItemAdapter
 
 
         notifyItemMoved(fromPosition, toPosition);
+        ((CompositionActivity) parentFragment.getActivity()).drawLayers();
     }
 
     @Override
