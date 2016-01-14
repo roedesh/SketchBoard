@@ -34,21 +34,19 @@ public class MainActivity extends AppCompatActivity {
 
         final RecyclerView recyclerView = (RecyclerView)findViewById(R.id.main_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ArrayList<Bitmap> recents = new ArrayList<>();
-        List<Object> objects = SaveAndLoadManager.loadAll(10);
-        System.out.println(objects.size() + "saveandoad");
-        for(Object e : objects)
+        ArrayList<BitmapWrapper> recents = new ArrayList<>();
+        List<NameObject> objects = SaveAndLoadManager.loadAll(10);
+        for(NameObject e : objects)
         {
-            System.out.println(e.getClass().getName());
-            if(e instanceof RecentWrapper)
+            if(e.getObject() instanceof RecentWrapper)
             {
-                Matrix matrix = new Matrix();
+                RecentWrapper wrapper = (RecentWrapper) e.getObject();
 
+                Matrix matrix = new Matrix();
                 matrix.postRotate(90);
 
-                Bitmap rotatedBitmap = Bitmap.createBitmap(((RecentWrapper) e).getRecentmap() , 0, 0, ((RecentWrapper) e).getRecentmap() .getWidth(), ((RecentWrapper) e).getRecentmap() .getHeight(), matrix, true);
-                recents.add(rotatedBitmap);
-
+                Bitmap rotatedBitmap = Bitmap.createBitmap(wrapper.getRecentmap() , 0, 0, wrapper.getRecentmap() .getWidth(), wrapper.getRecentmap() .getHeight(), matrix, true);
+                recents.add(new BitmapWrapper(e.getName(), rotatedBitmap));
             }
         }
 
