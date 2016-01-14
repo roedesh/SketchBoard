@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import nl.fhict.sketchboard.Layer;
@@ -114,12 +116,24 @@ public class SaveAndLoadManager {
         return null;
     }
 
-    public static List<Object> loadAll(){
+    public static List<Object> loadAll(int amount){
         List<Object> tempObjects = new ArrayList<>();
         File tempDir = new File(pathPrefix);
         if (tempDir.exists()){
-            for (File f : tempDir.listFiles()){
-                Object o = load(f.getName());
+            File[] tempFiles = tempDir.listFiles();
+
+            Arrays.sort(tempFiles, new Comparator<File>() {
+                public int compare(File f1, File f2) {
+                    return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+                }
+            });
+
+            if (amount > tempFiles.length){
+                amount = tempFiles.length;
+            }
+
+            for (int i = 0; i < amount; i++){
+                Object o = load(tempFiles[i].getName());
                 if (o != null){
                     tempObjects.add(o);
                 }
