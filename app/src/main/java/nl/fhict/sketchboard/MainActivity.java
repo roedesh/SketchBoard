@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         final RecyclerView recyclerView = (RecyclerView)findViewById(R.id.main_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<Bitmap> recents = new ArrayList<>();
-        List<Object> objects = SaveAndLoadManager.loadAll();
+        List<Object> objects = SaveAndLoadManager.loadAll(10);
         for(Object e : objects)
         {
             if(e instanceof RecentWrapper)
