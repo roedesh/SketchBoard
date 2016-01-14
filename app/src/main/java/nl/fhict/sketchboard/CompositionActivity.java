@@ -410,7 +410,8 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                         textAccept.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Paint p = drawingView.getDrawPaint();
+                                Paint p = new Paint();
+                                p.setColor(drawingView.getPaintColor());
                                 p.setTextSize(textDialogSeekbar.getProgress());
                                 p.setStrokeWidth(textDialogSeekbarWidth.getProgress());
                                 addLayer(new TextLayer(editText.getText().toString(), p));
