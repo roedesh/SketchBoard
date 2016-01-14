@@ -16,7 +16,7 @@
         android:icon="@drawable/ic_format_text_grey600_24dp"
         android:id="@+id/menu_nav_insert_text"/>
     <item android:title="Preview"
-        android:icon="@drawable/ic_add"
+        android:icon="@drawable/ic_slideshow_black_24dp"
         android:id="@+id/menu_nav_preview"/>
     <item android:title="@string/action_save"
         android:icon="@drawable/ic_content_save_grey600_24dp"
