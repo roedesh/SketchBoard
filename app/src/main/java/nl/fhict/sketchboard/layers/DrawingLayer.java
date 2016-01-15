@@ -57,8 +57,8 @@ public class DrawingLayer extends BaseLayer {
             if (previousPoint != null &&
                     previousPoint.getPaint().getColor() == point.getPaint().getColor() &&
                     previousPoint.getPaint().getStrokeWidth() == point.getPaint().getStrokeWidth()) {
-                canvas.drawLine(previousPoint.getX(), previousPoint.getY(),
-                        point.getX(), point.getY(), point.getPaint());
+                canvas.drawLine(previousPoint.getX() + getX(), previousPoint.getY() + getY(),
+                        point.getX() + getX(), point.getY() + getY(), point.getPaint());
             }
 
             previousPoint = point;
