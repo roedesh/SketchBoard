@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
         final AppBarLayout appBarLayout = (AppBarLayout)findViewById(R.id.main_appbar_layout);
 
-        loadRecent();
-
         final RecyclerView overlay = (RecyclerView)findViewById(R.id.main_overlay_recycler);
         overlay.setLayoutManager(new LinearLayoutManager(this));
         final ArrayList<Integer> templates = new ArrayList<>();
@@ -74,6 +72,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadRecent();
+    }
 
     private void loadRecent(){
         ArrayList<BitmapWrapper> recents = new ArrayList<>();

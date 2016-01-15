@@ -47,10 +47,10 @@ public class LayerListItemAdapter
     }
 
     private List<Layerable> layerableList;
-    private static OnItemClickListener mOnItemClickListener;
+    private OnItemClickListener mOnItemClickListener;
     private static Fragment parentFragment;
 
-    public static class MyViewHolder extends AbstractDraggableItemViewHolder implements View.OnClickListener {
+    public class MyViewHolder extends AbstractDraggableItemViewHolder implements View.OnClickListener {
         public FrameLayout container;
         public View dragHandle;
         public TextView textView;
@@ -60,13 +60,14 @@ public class LayerListItemAdapter
             container = (FrameLayout) v.findViewById(R.id.container);
             dragHandle = v.findViewById(R.id.drag_handle);
             textView = (TextView) v.findViewById(R.id.text1);
-            v.setOnClickListener(this);
+            container.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            Log.d("ACTIVELAYER", getAdapterPosition()+"");
-            ((CompositionActivity)parentFragment.getActivity()).setActiveLayer(getAdapterPosition());
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onItemClick(layerableList.get(getAdapterPosition()));
+            }
         }
     }
 
@@ -165,14 +166,10 @@ public class LayerListItemAdapter
     }
 
     public interface OnItemClickListener {
-        void onItemClick(int position);
+        void onItemClick(Layerable layer);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         mOnItemClickListener = listener;
-    }
-
-    public boolean isOnItemClickListenerNull() {
-        return mOnItemClickListener == null;
     }
 }

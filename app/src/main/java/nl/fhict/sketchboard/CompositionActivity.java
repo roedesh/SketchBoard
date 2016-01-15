@@ -1,12 +1,12 @@
 package nl.fhict.sketchboard;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
@@ -14,6 +14,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -22,7 +23,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -34,7 +34,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,18 +67,49 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
     DrawingView drawingView;
     int yourStep = 10;
 
+    private DrawerLayout mDrawer;
+
+    private boolean mIsInMovingMode = false;
+    private boolean mIsFinishAllowed = false;
+
+    private final PointF mInitialMovingLayerLocation = new PointF(),
+            mInitialTouchLocation = new PointF();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_composition);
-        LinearLayout mainLayout = (LinearLayout) findViewById(R.id.main_linear_layout);
+        ViewGroup mainLayout = (ViewGroup) findViewById(R.id.main_linear_layout);
+
+        final FloatingActionButton moveFab = (FloatingActionButton)findViewById(R.id.move_toggle_button);
+        moveFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mIsInMovingMode = !mIsInMovingMode;
+                moveFab.setImageResource(mIsInMovingMode ? R.drawable.ic_done_black_24dp : R.drawable.ic_open_with_black_24dp);
+            }
+        });
 
         // Creates a new drawing view and adds it to the main linear layout.
         drawingView = new DrawingView(getApplicationContext());
         drawingView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (activeLayer != null && activeLayer instanceof DrawingLayer) {
+                if (mIsInMovingMode) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            mInitialTouchLocation.set(event.getX(), event.getY());
+                            mInitialMovingLayerLocation.set(activeLayer.getX(), activeLayer.getY());
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            activeLayer.setPosition(
+                                    mInitialMovingLayerLocation.x + event.getX() - mInitialTouchLocation.x,
+                                    mInitialMovingLayerLocation.y + event.getY() - mInitialTouchLocation.y
+                            );
+                            drawLayers();
+                            break;
+                    }
+                } else if (activeLayer != null && activeLayer instanceof DrawingLayer) {
                     float touchX = event.getX();
                     float touchY = event.getY();
                     switch (event.getAction()) {
@@ -100,6 +130,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
                     }
                     drawLayers();
                 }
+
                 return true;
             }
         });
@@ -151,16 +182,16 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
 
 
-        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mDrawer = (DrawerLayout) findViewById(R.id.main_drawer);
+        mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         final FloatingActionButton drawerbutton = (FloatingActionButton) findViewById(R.id.drawerbutton);
 
         drawerbutton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                drawerLayout.openDrawer(Gravity.RIGHT);
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                mDrawer.openDrawer(Gravity.RIGHT);
+                mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             }
         });
 
@@ -169,12 +200,12 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         layoutbutton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                drawerLayout.openDrawer(Gravity.LEFT);
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                mDrawer.openDrawer(Gravity.LEFT);
+                mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             }
         });
 
-        drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+        mDrawer.setDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
 
@@ -187,7 +218,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
             @Override
             public void onDrawerClosed(View drawerView) {
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
 
             @Override
@@ -208,7 +239,7 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                drawerLayout.closeDrawers();
+                mDrawer.closeDrawers();
 
                 // Handle item selection
                 switch (item.getItemId()) {
@@ -450,11 +481,92 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
 
                         return true;
-                    default:
+                    case R.id.menu_nav_delete:
+                        new android.support.v7.app.AlertDialog.Builder(CompositionActivity.this)
+                                .setTitle("Weet je zeker dat je deze laag wil verwijderen?")
+                                .setNegativeButton("Annuleer", null)
+                                .setPositiveButton("Verwijder", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        removeLayer(activeLayer);
+                                    }
+                                })
+                                .create().show();
                         return true;
+                    case R.id.menu_nav_rotate:
+                        Dialog rotateDialog = new Dialog(CompositionActivity.this);
+                        LayoutInflater rotateInflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+                        View rotateLayout = rotateInflater.inflate(R.layout.dialog_rotate,
+                                (ViewGroup)findViewById(R.id.your_dialog_root_element));
+                        rotateDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        rotateDialog.setContentView(rotateLayout);
+
+
+                        final TextView yourRotateDialogTextview = (TextView) rotateLayout.findViewById(R.id.your_dialog_textview);
+                        final SeekBar yourRotateDialogSeekBar = (SeekBar) rotateLayout.findViewById(R.id.your_dialog_seekbar);
+                        yourRotateDialogSeekBar.setProgress(activeLayer.getRotationAngle());
+                        yourRotateDialogTextview.setText(String.format("Rotatie in graden: %d", activeLayer.getRotationAngle()));
+                        rotateDialog.show();
+                        SeekBar.OnSeekBarChangeListener yourRotateSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
+                            @Override
+                            public void onStopTrackingTouch(SeekBar seekBar) {}
+
+                            @Override
+                            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                            @Override
+                            public void onProgressChanged(SeekBar seekBark, int progress, boolean fromUser) {
+                                yourRotateDialogTextview.setText(String.format("Rotatie in graden: %d", progress));
+                                activeLayer.setRotationAngle(progress);
+                                drawLayers();
+                            }
+                        };
+                        yourRotateDialogSeekBar.setOnSeekBarChangeListener(yourRotateSeekBarListener);
+                        return true;
+                    case R.id.menu_nav_scale:
+                        if (activeLayer instanceof ImageLayer) {
+                            Dialog scaleDialog = new Dialog(CompositionActivity.this);
+                            LayoutInflater scaleInflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+                            View scaleLayout = scaleInflater.inflate(R.layout.dialog_scale,
+                                    (ViewGroup)findViewById(R.id.your_dialog_root_element));
+                            scaleDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            scaleDialog.setContentView(scaleLayout);
+
+
+                            final TextView yourScaleDialogTextview = (TextView) scaleLayout.findViewById(R.id.your_dialog_textview);
+                            final SeekBar yourScaleDialogSeekBar = (SeekBar) scaleLayout.findViewById(R.id.your_dialog_seekbar);
+                            yourScaleDialogSeekBar.setProgress(Math.round(((ImageLayer)activeLayer).getScale() * 100));
+                            yourScaleDialogTextview.setText(String.format("Schaal in procent: %d", Math.round(((ImageLayer)activeLayer).getScale() * 100)));
+                            scaleDialog.show();
+                            SeekBar.OnSeekBarChangeListener yourScaleSeekBarListener = new SeekBar.OnSeekBarChangeListener() {
+                                @Override
+                                public void onStopTrackingTouch(SeekBar seekBar) {}
+
+                                @Override
+                                public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                                @Override
+                                public void onProgressChanged(SeekBar seekBark, int progress, boolean fromUser) {
+                                    if (progress < 1) progress = 1;
+                                    yourScaleDialogTextview.setText(String.format("Schaal in procent: %d", progress));
+                                    ((ImageLayer)activeLayer).setScale(progress / 100f);
+                                    drawLayers();
+                                }
+                            };
+                            yourScaleDialogSeekBar.setOnSeekBarChangeListener(yourScaleSeekBarListener);
+                        } else {
+                            Toast.makeText(CompositionActivity.this, "Alleen Image Layers kunnen geschaald worden", Toast.LENGTH_LONG).show();
+                        }
+                        return true;
+                    default:
+                        return false;
                 }
             }
         });
+
+        if (layers != null || layers.isEmpty()) {
+            activeLayer = layers.get(layers.size() - 1);
+        }
     }
 
 
@@ -477,6 +589,24 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mIsFinishAllowed) {
+            super.onBackPressed();
+            return;
+        }
+
+        mDrawer.closeDrawers();
+
+        mIsFinishAllowed = true;
+        Toast.makeText(this, "Druk nogmaals om te sluiten", Toast.LENGTH_LONG).show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mIsFinishAllowed = false;
+            }
+        }, 4000);
+    }
 
     @Override
     public void onColorChanged(int color) {
@@ -485,9 +615,17 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
 
     public void addLayer(Layerable layer) {
         this.layers.add(layer);
+        reloadLayers();
+    }
+
+    public void removeLayer(Layerable layer) {
+        this.layers.remove(layer);
+        reloadLayers();
+    }
+
+    private void reloadLayers() {
         activeLayer = layers.get(layers.size() - 1);
-        Fragment frg = null;
-        frg = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
+        Fragment frg = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.detach(frg);
         ft.attach(frg);
@@ -496,9 +634,19 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
     }
 
     public void drawLayers() {
-        if (drawingView.getCanvas() != null) {
-            for (Layerable layer : this.layers) {
-                layer.draw(this.drawingView.getCanvas());
+        final Canvas canvas = drawingView.getCanvas();
+        if (canvas != null) {
+            canvas.drawColor(getResources().getColor(R.color.palette_background));
+            for (Layerable layer : layers) {
+                if (layer.getRotationAngle() > 0) {
+                    final PointF center = layer.getRotationCenter();
+                    canvas.save();
+                    canvas.rotate(layer.getRotationAngle(), center.x, center.y);
+                    layer.draw(canvas);
+                    canvas.restore();
+                } else {
+                    layer.draw(canvas);
+                }
             }
         }
         drawingView.invalidate();
@@ -535,10 +683,15 @@ public class CompositionActivity extends AppCompatActivity implements ColorPicke
         return true;
     }
 
-
-    public void setActiveLayer(int pos) {
-        activeLayer = layers.get(pos);
-        Log.d("ACTIVELAYER", String.valueOf(pos));
+    public LayerListItemAdapter.OnItemClickListener getLayerListClickAdapter() {
+        return new LayerListItemAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Layerable layer) {
+                Toast.makeText(CompositionActivity.this, layer.getName().getValue() +
+                        " is geselecteerd als actieve laag", Toast.LENGTH_LONG).show();
+                activeLayer = layer;
+            }
+        };
     }
 
     public Bitmap maskpreview(Bitmap s)

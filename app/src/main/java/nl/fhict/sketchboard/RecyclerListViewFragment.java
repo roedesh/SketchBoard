@@ -1,6 +1,5 @@
 package nl.fhict.sketchboard;
 
-import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,14 +7,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
-import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
@@ -33,8 +30,6 @@ public class RecyclerListViewFragment extends Fragment {
     private LayerListItemAdapter mAdapter;
     private RecyclerView.Adapter mWrappedAdapter;
     private RecyclerViewDragDropManager mRecyclerViewDragDropManager;
-
-    private LayerListItemAdapter.OnItemClickListener mFutureOnItemClickListener;
 
     public RecyclerListViewFragment() {
         super();
@@ -57,16 +52,8 @@ public class RecyclerListViewFragment extends Fragment {
         mRecyclerViewDragDropManager = new RecyclerViewDragDropManager();
 
         //adapter
-        final LayerListItemAdapter myItemAdapter = new LayerListItemAdapter(getDataProvider(), this);
-        mAdapter = myItemAdapter;
-        if (mAdapter.isOnItemClickListenerNull()) {
-            mAdapter.setOnItemClickListener(new LayerListItemAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(int position) {
-                    ((CompositionActivity)getActivity()).setActiveLayer(position);
-                }
-            });
-        }
+        mAdapter = new LayerListItemAdapter(getDataProvider(), this);
+        mAdapter.setOnItemClickListener(((CompositionActivity)getActivity()).getLayerListClickAdapter());
 
         mWrappedAdapter = mRecyclerViewDragDropManager.createWrappedAdapter(mAdapter);      // wrap for dragging
 

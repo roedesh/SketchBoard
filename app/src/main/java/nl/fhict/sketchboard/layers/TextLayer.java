@@ -2,6 +2,7 @@ package nl.fhict.sketchboard.layers;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PointF;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -9,10 +10,10 @@ import java.io.ObjectOutputStream;
 
 import nl.fhict.sketchboard.StableString;
 
-public class TextLayer implements Layerable {
+public class TextLayer extends BaseLayer {
 
-    private float x;
-    private float y;
+    //private float x;
+    //private float y;
 
     private static String PREFIX = "TextLayer #";
     private static long nextNumber = 1;
@@ -25,8 +26,9 @@ public class TextLayer implements Layerable {
         this.text = text;
         this.paint = paint;
 
-        this.x = 200;
-        this.y = 200;
+        setPosition(200, 200);
+        //this.x = 200;
+        //this.y = 200;
     }
 
     @Override
@@ -36,12 +38,15 @@ public class TextLayer implements Layerable {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawText(this.text, x, y, this.paint);
+        //canvas.drawText(this.text, x, y, this.paint);
+        canvas.drawText(this.text, getX(), getY(), this.paint);
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
-        out.writeFloat(x);
-        out.writeFloat(y);
+        out.writeFloat(getX());
+        out.writeFloat(getY());
+        //out.writeFloat(x);
+        //out.writeFloat(y);
 
         out.writeObject(name);
         out.writeObject(text);
@@ -55,8 +60,11 @@ public class TextLayer implements Layerable {
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException{
-        this.x = in.readFloat();
-        this.y = in.readFloat();
+        final float x = in.readFloat();
+        final float y = in.readFloat();
+        setPosition(x, y);
+        //this.x = in.readFloat();
+        //this.y = in.readFloat();
 
         this.name = (StableString) in.readObject();
         this.text = (String) in.readObject();
@@ -74,5 +82,10 @@ public class TextLayer implements Layerable {
         this.paint.setStrokeWidth(width);
         this.paint.setStrokeCap(cap);
         // Missing shit
+    }
+
+    @Override
+    public PointF getRotationCenter() {
+        return new PointF(getX(), getY());
     }
 }
